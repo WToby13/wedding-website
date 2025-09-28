@@ -181,14 +181,20 @@ document.addEventListener('DOMContentLoaded', function() {
     // Add subtle hover effects to folder icons
     const folderIcons = document.querySelectorAll('.folder-icon');
     folderIcons.forEach(icon => {
-        icon.addEventListener('mouseenter', () => {
-            icon.style.transform = 'scale(1.1) rotate(5deg)';
-            icon.style.transition = 'transform 0.3s ease';
-        });
-        
-        icon.addEventListener('mouseleave', () => {
-            icon.style.transform = 'scale(1) rotate(0deg)';
-        });
+        const svg = icon.querySelector('svg');
+        if (svg) {
+            icon.addEventListener('mouseenter', () => {
+                icon.style.transform = 'scale(1.1)';
+                svg.style.transform = 'rotate(5deg)';
+                icon.style.transition = 'transform 0.3s ease';
+                svg.style.transition = 'transform 0.3s ease';
+            });
+            
+            icon.addEventListener('mouseleave', () => {
+                icon.style.transform = 'scale(1)';
+                svg.style.transform = 'rotate(0deg)';
+            });
+        }
     });
     
     // Performance optimization: Throttle scroll events
