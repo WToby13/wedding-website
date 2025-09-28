@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Andrea & Tobias - Wedding in Mandelieu-La-Napoule</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Loading Animation -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="loading-content">
+            <div class="loading-text">
+                <h1>Andrea & Tobias</h1>
+                <p>September 11-13, 2025</p>
+                <div class="loading-bar">
+                    <div class="loading-progress"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div id="main-content" class="main-content hidden">
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-overlay"></div>
+            <div class="hero-content">
+                <h1 class="hero-title">Andrea Olsen</h1>
+                <div class="hero-ampersand">&</div>
+                <h1 class="hero-title">Tobias Keating</h1>
+                <p class="hero-date">September 11-13, 2025</p>
+                <p class="hero-location">Mandelieu-La-Napoule, France</p>
+                <div class="scroll-indicator">
+                    <div class="scroll-arrow"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Wedding Details -->
+        <section class="wedding-details">
+            <div class="container">
+                <h2 class="section-title">Our Wedding Celebration</h2>
+                <p class="section-subtitle">Join us for a magical weekend on the beautiful Côte d'Azur</p>
+                
+                <!-- Expandable Folders -->
+                <div class="folders-container">
+                    <!-- Accommodation Folder -->
+                    <div class="folder" data-folder="accommodation">
+                        <div class="folder-header">
+                            <div class="folder-icon">🏨</div>
+                            <h3 class="folder-title">Accommodation</h3>
+                            <div class="folder-arrow">›</div>
+                        </div>
+                        <div class="folder-content">
+                            <div class="folder-text">
+                                <h4>Recommended Hotels</h4>
+                                <p>We've secured special rates at several beautiful hotels in Mandelieu-La-Napoule and Cannes:</p>
+                                <ul>
+                                    <li><strong>Hotel Napoule Beach</strong> - 5 minutes from venue</li>
+                                    <li><strong>Hotel Martinez</strong> - Cannes, 15 minutes drive</li>
+                                    <li><strong>Villa Saint Exupéry</strong> - Boutique hotel with sea views</li>
+                                </ul>
+                                <p>Please book directly and mention "Olsen-Keating Wedding" for special rates.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Travel Folder -->
+                    <div class="folder" data-folder="travel">
+                        <div class="folder-header">
+                            <div class="folder-icon">✈️</div>
+                            <h3 class="folder-title">Travel Information</h3>
+                            <div class="folder-arrow">›</div>
+                        </div>
+                        <div class="folder-content">
+                            <div class="folder-text">
+                                <h4>Getting There</h4>
+                                <p><strong>Nearest Airport:</strong> Nice Côte d'Azur Airport (NCE)</p>
+                                <p>Direct flights available from major European cities. Transfer time to Mandelieu-La-Napoule: 45 minutes by car or taxi.</p>
+                                
+                                <h4>Transportation</h4>
+                                <ul>
+                                    <li>Airport transfers can be arranged</li>
+                                    <li>Car rental available at the airport</li>
+                                    <li>Taxi services: approximately €80-100</li>
+                                    <li>Public transport: Bus 210 from Nice to Cannes, then local bus</li>
+                                </ul>
+                                
+                                <h4>Local Transportation</h4>
+                                <p>Most activities will be within walking distance or we'll provide shuttle services between venues.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Agenda Folder -->
+                    <div class="folder" data-folder="agenda">
+                        <div class="folder-header">
+                            <div class="folder-icon">📅</div>
+                            <h3 class="folder-title">Weekend Agenda</h3>
+                            <div class="folder-arrow">›</div>
+                        </div>
+                        <div class="folder-content">
+                            <div class="folder-text">
+                                <h4>Friday, September 11</h4>
+                                <ul>
+                                    <li><strong>6:00 PM</strong> - Welcome Reception at Villa de la Napoule</li>
+                                    <li><strong>8:00 PM</strong> - Cocktail dinner with live music</li>
+                                    <li><strong>11:00 PM</strong> - Late night drinks by the sea</li>
+                                </ul>
+                                
+                                <h4>Saturday, September 12</h4>
+                                <ul>
+                                    <li><strong>10:00 AM</strong> - Brunch at Hotel Napoule Beach</li>
+                                    <li><strong>2:00 PM</strong> - Free time to explore or relax</li>
+                                    <li><strong>4:00 PM</strong> - Ceremony at Château de la Napoule</li>
+                                    <li><strong>5:30 PM</strong> - Cocktail hour in the gardens</li>
+                                    <li><strong>7:00 PM</strong> - Reception dinner</li>
+                                    <li><strong>9:00 PM</strong> - Dancing under the stars</li>
+                                </ul>
+                                
+                                <h4>Sunday, September 13</h4>
+                                <ul>
+                                    <li><strong>11:00 AM</strong> - Farewell brunch at the beach club</li>
+                                    <li><strong>2:00 PM</strong> - Departures</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contact Folder -->
+                    <div class="folder" data-folder="contact">
+                        <div class="folder-header">
+                            <div class="folder-icon">📞</div>
+                            <h3 class="folder-title">Contact Information</h3>
+                            <div class="folder-arrow">›</div>
+                        </div>
+                        <div class="folder-content">
+                            <div class="folder-text">
+                                <h4>Wedding Coordinators</h4>
+                                <p><strong>Andrea Olsen</strong><br>
+                                Phone: +33 6 XX XX XX XX<br>
+                                Email: andrea.olsen@email.com</p>
+                                
+                                <p><strong>Tobias Keating</strong><br>
+                                Phone: +33 6 XX XX XX XX<br>
+                                Email: tobias.keating@email.com</p>
+                                
+                                <h4>Wedding Planner</h4>
+                                <p><strong>Sophie Martin</strong><br>
+                                Phone: +33 6 XX XX XX XX<br>
+                                Email: sophie@weddingcotedazur.com</p>
+                                
+                                <h4>Emergency Contacts</h4>
+                                <p>For any urgent matters during the weekend, please contact our wedding planner or the hotel concierge.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RSVP Section -->
+                <div class="rsvp-section">
+                    <h3>RSVP</h3>
+                    <p>Please respond by August 1st, 2025</p>
+                    <a href="mailto:rsvp@andrea-tobias-wedding.com" class="rsvp-button">Send RSVP</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>&copy; 2025 Andrea Olsen & Tobias Keating. Made with ❤️ for our special day.</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
