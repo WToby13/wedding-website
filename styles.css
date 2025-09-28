@@ -304,13 +304,10 @@ h1, h2, h3, h4, h5, h6 {
 /* Folders */
 .folders-container {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 0;
+    grid-template-columns: 1fr;
+    gap: 2rem;
     max-width: 100%;
     margin: 0 auto;
-    border-radius: 20px;
-    overflow: hidden;
-    box-shadow: 0 10px 40px rgba(139, 115, 85, 0.1);
 }
 
 .folder {
@@ -319,6 +316,8 @@ h1, h2, h3, h4, h5, h6 {
     transition: all 0.4s ease;
     position: relative;
     overflow: hidden;
+    border-radius: 20px;
+    box-shadow: 0 8px 30px rgba(139, 115, 85, 0.1);
 }
 
 .folder-accommodation {
@@ -596,12 +595,6 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* Responsive Design */
-@media (max-width: 1200px) {
-    .folders-container {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
 @media (max-width: 768px) {
     .hero-title {
         font-size: 3rem;
@@ -629,7 +622,10 @@ h1, h2, h3, h4, h5, h6 {
     }
     
     .folders-container {
-        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    .folder {
         border-radius: 15px;
     }
     
