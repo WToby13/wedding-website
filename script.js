@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 800);
     }, 3000); // 3 second loading animation
     
-    // Folder Functionality
+    // Accordion Folder Functionality
     const folders = document.querySelectorAll('.folder');
     
     folders.forEach(folder => {
@@ -26,32 +26,29 @@ document.addEventListener('DOMContentLoaded', function() {
         header.addEventListener('click', () => {
             const isActive = folder.classList.contains('active');
             
-            // Close all other folders
+            // Close all other folders first
             folders.forEach(otherFolder => {
                 if (otherFolder !== folder) {
                     otherFolder.classList.remove('active');
                 }
             });
             
-            // Toggle current folder
-            if (isActive) {
-                folder.classList.remove('active');
-            } else {
-                folder.classList.add('active');
-                
-                // Smooth scroll to folder if it's not fully visible
-                setTimeout(() => {
-                    const folderRect = folder.getBoundingClientRect();
-                    const windowHeight = window.innerHeight;
+            // Toggle current folder with delay for smooth accordion effect
+            setTimeout(() => {
+                if (isActive) {
+                    folder.classList.remove('active');
+                } else {
+                    folder.classList.add('active');
                     
-                    if (folderRect.top < 100 || folderRect.bottom > windowHeight - 100) {
+                    // Smooth scroll to expanded folder
+                    setTimeout(() => {
                         folder.scrollIntoView({
                             behavior: 'smooth',
                             block: 'center'
                         });
-                    }
-                }, 100);
-            }
+                    }, 300);
+                }
+            }, 100);
         });
     });
     

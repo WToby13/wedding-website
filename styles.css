@@ -356,23 +356,44 @@ h1, h2, h3, h4, h5, h6 {
     margin-right: auto;
 }
 
-/* Folders */
+/* Folders - Accordion Style */
 .folders-container {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 2rem;
     max-width: 100%;
     margin: 0 auto;
+    position: relative;
 }
 
 .folder {
     background: white;
     border: none;
-    transition: all 0.4s ease;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     overflow: hidden;
     border-radius: 20px;
     box-shadow: 0 8px 30px rgba(139, 115, 85, 0.1);
+    margin-bottom: -40px;
+    z-index: 1;
+    transform: translateY(0);
+}
+
+.folder:nth-child(1) {
+    z-index: 5;
+}
+
+.folder:nth-child(2) {
+    z-index: 4;
+}
+
+.folder:nth-child(3) {
+    z-index: 3;
+}
+
+.folder:nth-child(4) {
+    z-index: 2;
+}
+
+.folder:nth-child(5) {
+    z-index: 1;
 }
 
 .folder-accommodation {
@@ -391,9 +412,21 @@ h1, h2, h3, h4, h5, h6 {
     background: linear-gradient(135deg, #ede8e0 0%, #e8e4e0 100%);
 }
 
+.folder-additional {
+    background: linear-gradient(135deg, #e8e4e0 0%, #e0dcd7 100%);
+}
+
 .folder:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 20px 60px rgba(139, 115, 85, 0.15);
+    transform: translateY(-10px);
+    box-shadow: 0 15px 40px rgba(139, 115, 85, 0.15);
+    z-index: 10 !important;
+}
+
+.folder.active {
+    transform: translateY(-20px);
+    box-shadow: 0 20px 50px rgba(139, 115, 85, 0.2);
+    z-index: 10 !important;
+    margin-bottom: 0;
 }
 
 .folder-header {
@@ -401,9 +434,10 @@ h1, h2, h3, h4, h5, h6 {
     align-items: center;
     padding: 2.5rem 2rem;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.4s ease;
     border-bottom: 1px solid rgba(139, 115, 85, 0.1);
     position: relative;
+    min-height: 80px;
 }
 
 .folder-header::before {
@@ -415,7 +449,7 @@ h1, h2, h3, h4, h5, h6 {
     bottom: 0;
     background: rgba(139, 115, 85, 0.05);
     opacity: 0;
-    transition: opacity 0.3s ease;
+    transition: opacity 0.4s ease;
 }
 
 .folder-header:hover::before {
@@ -423,7 +457,12 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .folder-header:hover {
-    padding-left: 2.5rem;
+    padding-left: 2.8rem;
+}
+
+.folder.active .folder-header {
+    background: rgba(139, 115, 85, 0.08);
+    border-bottom: 1px solid rgba(139, 115, 85, 0.2);
 }
 
 .folder-icon {
@@ -479,13 +518,15 @@ h1, h2, h3, h4, h5, h6 {
 .folder-content {
     max-height: 0;
     overflow: hidden;
-    transition: max-height 0.5s ease-out;
-    background-color: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
+    transition: max-height 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    background-color: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(15px);
+    border-radius: 0 0 20px 20px;
 }
 
 .folder.active .folder-content {
-    max-height: 1200px;
+    max-height: 1500px;
+    transition: max-height 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .folder-text {
@@ -684,12 +725,13 @@ h1, h2, h3, h4, h5, h6 {
         font-size: 1.2rem;
     }
     
-    .folders-container {
-        gap: 1.5rem;
-    }
-    
     .folder {
         border-radius: 15px;
+        margin-bottom: -30px;
+    }
+    
+    .folder.active {
+        margin-bottom: 0;
     }
     
     .folder-header {
