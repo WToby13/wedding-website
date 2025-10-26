@@ -75,13 +75,12 @@ h1, h2, h3, h4, h5, h6 {
 .loading-names .last-name {
     display: block;
     font-size: 4.5rem;
-    color: #8a8b7e;
+    color: #9a9b8e;
     line-height: 1.1;
     margin-bottom: 1.8rem;
     font-weight: 300;
-    opacity: 0.75;
-    -webkit-text-stroke: 0.3px rgba(138, 139, 126, 0.3);
-    transform: scaleX(0.98);
+    opacity: 0.6;
+    letter-spacing: 1px;
 }
 
 .loading-ampersand {
@@ -228,11 +227,10 @@ h1, h2, h3, h4, h5, h6 {
     font-size: 5rem;
     display: block;
     line-height: 1;
-    color: #8a8b7e;
+    color: #9a9b8e;
     font-weight: 300;
-    opacity: 0.75;
-    -webkit-text-stroke: 0.3px rgba(138, 139, 126, 0.3);
-    transform: scaleX(0.98);
+    opacity: 0.6;
+    letter-spacing: 1px;
 }
 
 .hero-ampersand {
