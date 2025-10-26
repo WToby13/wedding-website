@@ -8,7 +8,7 @@
 body {
     font-family: 'Cormorant Garamond', serif;
     line-height: 1.7;
-    color: #3d4035;
+    color: #2E3B5D;
     background-color: #fdfcfb;
     overflow-x: hidden;
     font-weight: 400;
@@ -25,10 +25,10 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .script-font {
-    font-family: 'Allura', cursive;
+    font-family: 'Great Vibes', cursive;
     font-weight: 400;
     font-style: normal;
-    letter-spacing: 0;
+    letter-spacing: 2px;
 }
 
 /* Loading Screen */
@@ -107,7 +107,7 @@ h1, h2, h3, h4, h5, h6 {
     align-items: center;
     justify-content: center;
     text-align: center;
-    color: #3d4035;
+    color: #2E3B5D;
     position: relative;
     overflow: hidden;
     padding: 4rem 2rem;
@@ -158,7 +158,7 @@ h1, h2, h3, h4, h5, h6 {
     font-size: 0.95rem;
     letter-spacing: 5px;
     text-transform: uppercase;
-    color: #8a8b7e;
+    color: #5B6B8C;
     font-weight: 300;
     margin-bottom: 2.5rem;
     animation: fadeIn 1.2s ease-out 0.7s both;
@@ -169,7 +169,7 @@ h1, h2, h3, h4, h5, h6 {
     font-weight: 300;
     margin-bottom: 0.8rem;
     letter-spacing: 2px;
-    color: #5d5e54;
+    color: #2E3B5D;
 }
 
 .hero-name .first-name {
@@ -185,7 +185,7 @@ h1, h2, h3, h4, h5, h6 {
     font-size: 5rem;
     display: block;
     line-height: 1;
-    color: #7a7b6f;
+    color: #2E3B5D;
     font-weight: 400;
     letter-spacing: 2px;
 }
@@ -193,7 +193,7 @@ h1, h2, h3, h4, h5, h6 {
 .hero-ampersand {
     font-size: 2.5rem;
     margin: 2rem 0;
-    color: #a8a99b;
+    color: #7888A8;
     font-family: 'Cormorant Garamond', serif;
     font-weight: 300;
     font-style: italic;
@@ -202,14 +202,14 @@ h1, h2, h3, h4, h5, h6 {
 .hero-divider {
     width: 60px;
     height: 1px;
-    background: linear-gradient(90deg, transparent, #c4b5a0, transparent);
+    background: linear-gradient(90deg, transparent, #7888A8, transparent);
     margin: 3rem auto;
 }
 
 .hero-tagline {
     font-family: 'Cormorant Garamond', serif;
     font-size: 1.3rem;
-    color: #6d6e62;
+    color: #4A5A7A;
     font-style: normal;
     margin-bottom: 2rem;
     font-weight: 300;
@@ -222,7 +222,7 @@ h1, h2, h3, h4, h5, h6 {
     font-weight: 300;
     letter-spacing: 3px;
     text-transform: uppercase;
-    color: #5d5e54;
+    color: #2E3B5D;
 }
 
 .hero-location {
@@ -230,7 +230,7 @@ h1, h2, h3, h4, h5, h6 {
     font-size: 1rem;
     font-style: normal;
     margin-bottom: 5rem;
-    color: #8a8b7e;
+    color: #5B6B8C;
     font-weight: 300;
     letter-spacing: 1px;
 }
@@ -261,26 +261,26 @@ h1, h2, h3, h4, h5, h6 {
     font-size: 0.75rem;
     letter-spacing: 3px;
     text-transform: uppercase;
-    color: #a8a99b;
+    color: #7888A8;
     font-weight: 300;
 }
 
 .scroll-arrow {
     width: 20px;
     height: 20px;
-    border-right: 1.5px solid #a8a99b;
-    border-bottom: 1.5px solid #a8a99b;
+    border-right: 1.5px solid #7888A8;
+    border-bottom: 1.5px solid #7888A8;
     transform: rotate(45deg);
     transition: all 0.3s ease;
 }
 
 .scroll-indicator:hover .scroll-arrow {
-    border-color: #7a7b6f;
+    border-color: #2E3B5D;
     transform: rotate(45deg) translateY(3px);
 }
 
 .scroll-indicator:hover .scroll-text {
-    color: #7a7b6f;
+    color: #2E3B5D;
 }
 
 @keyframes bounce {
@@ -307,7 +307,7 @@ h1, h2, h3, h4, h5, h6 {
 .section-title {
     font-size: 3.5rem;
     text-align: center;
-    color: #8b7355;
+    color: #2E3B5D;
     margin-bottom: 1.5rem;
     font-weight: 300;
     letter-spacing: 2px;
@@ -323,13 +323,13 @@ h1, h2, h3, h4, h5, h6 {
     transform: translateX(-50%);
     width: 60px;
     height: 2px;
-    background: linear-gradient(90deg, #8b7355, #c4a484);
+    background: linear-gradient(90deg, #2E3B5D, #7888A8);
 }
 
 .section-subtitle {
     text-align: center;
     font-size: 1.5rem;
-    color: #a0958a;
+    color: #5B6B8C;
     margin-bottom: 6rem;
     font-style: italic;
     font-weight: 300;
@@ -454,7 +454,7 @@ h1, h2, h3, h4, h5, h6 {
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #8b7355;
+    color: #2E3B5D;
     transition: all 0.3s ease;
     position: relative;
     z-index: 2;
@@ -467,14 +467,14 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .folder:hover .folder-icon {
-    color: #6b5b47;
+    color: #1A2540;
     transform: scale(1.1);
 }
 
 .folder-title {
     flex: 1;
     font-size: 1.3rem;
-    color: #8b7355;
+    color: #2E3B5D;
     font-weight: 500;
     margin: 0;
     text-transform: uppercase;
@@ -485,7 +485,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .folder-arrow {
     font-size: 1.8rem;
-    color: #c4a484;
+    color: #7888A8;
     transition: all 0.3s ease;
     font-weight: 300;
     position: relative;
@@ -494,7 +494,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .folder.active .folder-arrow {
     transform: rotate(90deg);
-    color: #8b7355;
+    color: #2E3B5D;
 }
 
 .folder-content {
@@ -519,7 +519,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .folder-text h4 {
-    color: #8b7355;
+    color: #2E3B5D;
     font-size: 1.3rem;
     margin-bottom: 1rem;
     margin-top: 2rem;
@@ -540,7 +540,7 @@ h1, h2, h3, h4, h5, h6 {
     left: 0;
     width: 30px;
     height: 1px;
-    background: #c4a484;
+    background: #7888A8;
 }
 
 .folder-text p {
@@ -561,11 +561,11 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .folder-text li::marker {
-    color: #c4a484;
+    color: #7888A8;
 }
 
 .folder-text strong {
-    color: #8b7355;
+    color: #2E3B5D;
     font-weight: 500;
 }
 
@@ -599,7 +599,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .rsvp-section h3 {
     font-size: 2.5rem;
-    color: #8b7355;
+    color: #2E3B5D;
     margin-bottom: 1.5rem;
     font-weight: 300;
     text-transform: uppercase;
@@ -610,7 +610,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .rsvp-section p {
     font-size: 1.2rem;
-    color: #a0958a;
+    color: #5B6B8C;
     margin-bottom: 3rem;
     font-style: italic;
     position: relative;
@@ -620,14 +620,14 @@ h1, h2, h3, h4, h5, h6 {
 .rsvp-button {
     display: inline-block;
     padding: 1.2rem 3rem;
-    background: linear-gradient(135deg, #8b7355 0%, #c4a484 100%);
+    background: linear-gradient(135deg, #2E3B5D 0%, #4A5A7A 100%);
     color: white;
     text-decoration: none;
     border-radius: 50px;
     font-weight: 500;
     letter-spacing: 1px;
     transition: all 0.4s ease;
-    box-shadow: 0 8px 25px rgba(139, 115, 85, 0.3);
+    box-shadow: 0 8px 25px rgba(46, 59, 93, 0.3);
     text-transform: uppercase;
     font-size: 1rem;
     position: relative;
@@ -652,8 +652,8 @@ h1, h2, h3, h4, h5, h6 {
 
 .rsvp-button:hover {
     transform: translateY(-3px);
-    box-shadow: 0 12px 35px rgba(139, 115, 85, 0.4);
-    background: linear-gradient(135deg, #9d8263 0%, #d4b492 100%);
+    box-shadow: 0 12px 35px rgba(46, 59, 93, 0.4);
+    background: linear-gradient(135deg, #3D4A6C 0%, #5B6B8C 100%);
 }
 
 /* Footer */
