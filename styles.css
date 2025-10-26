@@ -25,8 +25,8 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .script-font {
-    font-family: 'Great Vibes', cursive;
-    font-weight: 400;
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
     font-style: normal;
     letter-spacing: 2px;
 }
@@ -186,11 +186,9 @@ h1, h2, h3, h4, h5, h6 {
     display: block;
     line-height: 1.1;
     color: #2E3B5D;
-    font-weight: 400;
+    font-weight: 300;
     letter-spacing: 2px;
     opacity: 1;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
 }
 
 .hero-ampersand {
