@@ -58,7 +58,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .loading-logo {
-    max-width: 400px;
+    max-width: 550px;
     width: 100%;
     height: auto;
     animation: fadeInScale 1.2s ease-out both;
@@ -824,7 +824,7 @@ h1, h2, h3, h4, h5, h6 {
 
 @media (max-width: 480px) {
     .loading-logo {
-        max-width: 250px;
+        max-width: 340px;
     }
     
     .hero-palm {
