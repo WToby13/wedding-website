@@ -344,12 +344,24 @@ h1, h2, h3, h4, h5, h6 {
     text-align: center;
     font-size: 1.5rem;
     color: #5B6B8C;
-    margin-bottom: 6rem;
+    margin-bottom: 3rem;
     font-style: normal;
     font-weight: 300;
     max-width: 600px;
     margin-left: auto;
     margin-right: auto;
+}
+
+.section-logo {
+    text-align: center;
+    margin-bottom: 4rem;
+}
+
+.wedding-logo-img {
+    max-width: 300px;
+    height: auto;
+    display: inline-block;
+    opacity: 0.9;
 }
 
 /* Folders - Accordion Style */
@@ -856,5 +868,9 @@ h1, h2, h3, h4, h5, h6 {
     
     .section-title {
         font-size: 2rem;
+    }
+    
+    .wedding-logo-img {
+        max-width: 200px;
     }
 }
