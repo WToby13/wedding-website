@@ -25,7 +25,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .script-font {
-    font-family: 'Beautifully Delicious Script', cursive;
+    font-family: 'Allura', cursive;
     font-weight: 400;
     font-style: normal;
     letter-spacing: 0;
@@ -78,15 +78,8 @@ h1, h2, h3, h4, h5, h6 {
     color: #7a7b6f;
     line-height: 1.1;
     margin-bottom: 1.8rem;
-    font-weight: 100;
-    opacity: 0.85;
-    letter-spacing: 1px;
-    -webkit-text-stroke: 0.2px transparent;
-    text-rendering: optimizeLegibility;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    filter: contrast(0.8) brightness(1.05);
-    transform: scaleX(0.95);
+    font-weight: 400;
+    letter-spacing: 2px;
 }
 
 .loading-ampersand {
@@ -234,15 +227,8 @@ h1, h2, h3, h4, h5, h6 {
     display: block;
     line-height: 1;
     color: #7a7b6f;
-    font-weight: 100;
-    opacity: 0.85;
-    letter-spacing: 1px;
-    -webkit-text-stroke: 0.2px transparent;
-    text-rendering: optimizeLegibility;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    filter: contrast(0.8) brightness(1.05);
-    transform: scaleX(0.95);
+    font-weight: 400;
+    letter-spacing: 2px;
 }
 
 .hero-ampersand {
