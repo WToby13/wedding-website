@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const loadingScreen = document.getElementById('loading-screen');
     const mainContent = document.getElementById('main-content');
     
-    // Simulate loading time
+    // Elegant loading experience with proper timing
     setTimeout(() => {
         loadingScreen.classList.add('hidden');
         mainContent.classList.remove('hidden');
@@ -13,8 +13,8 @@ document.addEventListener('DOMContentLoaded', function() {
         // Remove loading screen from DOM after animation
         setTimeout(() => {
             loadingScreen.style.display = 'none';
-        }, 800);
-    }, 3000); // 3 second loading animation
+        }, 1200);
+    }, 2800); // Refined timing for sophisticated feel
     
     // Accordion Folder Functionality
     const folders = document.querySelectorAll('.folder');
@@ -156,24 +156,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Add typing animation to hero titles (optional enhancement)
-    const heroTitles = document.querySelectorAll('.hero-title');
-    heroTitles.forEach((title, index) => {
-        const text = title.textContent;
-        title.textContent = '';
-        
-        setTimeout(() => {
-            let i = 0;
-            const typeWriter = () => {
-                if (i < text.length) {
-                    title.textContent += text.charAt(i);
-                    i++;
-                    setTimeout(typeWriter, 100);
-                }
-            };
-            typeWriter();
-        }, 500 + (index * 500)); // Stagger the animations
-    });
+    // Smooth fade-in for hero elements (removed typing animation for cleaner aesthetic)
     
     // Add subtle hover effects to folder icons
     const folderIcons = document.querySelectorAll('.folder-icon');
