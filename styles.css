@@ -148,7 +148,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .palm-tree-img {
-    max-width: 60px;
+    max-width: 85px;
     height: auto;
     display: inline-block;
     filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.05));
@@ -803,7 +803,7 @@ h1, h2, h3, h4, h5, h6 {
     }
     
     .palm-tree-img {
-        max-width: 40px;
+        max-width: 60px;
     }
     
     .hero-invite {
