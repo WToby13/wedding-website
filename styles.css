@@ -685,6 +685,14 @@ h1, h2, h3, h4, h5, h6 {
     opacity: 0.8;
 }
 
+.footer p::after {
+    content: '';
+}
+
+.footer p {
+    color: #f0ede7;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .loading-logo {
