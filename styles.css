@@ -25,8 +25,8 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .script-font {
-    font-family: 'The Wedding Script', cursive;
-    font-weight: 300;
+    font-family: 'Tangerine', cursive;
+    font-weight: 400;
     font-style: normal;
     letter-spacing: 2px;
 }
@@ -184,11 +184,11 @@ h1, h2, h3, h4, h5, h6 {
 .hero-name .last-name {
     font-size: 5rem;
     display: block;
-    line-height: 1;
+    line-height: 1.1;
     color: #5B6B8C;
-    font-weight: 300;
+    font-weight: 400;
     letter-spacing: 2px;
-    opacity: 0.85;
+    opacity: 0.9;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
