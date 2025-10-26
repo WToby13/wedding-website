@@ -204,13 +204,14 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .hero-ampersand {
-    font-size: 3rem;
+    font-size: 3.5rem;
     margin: 0;
     padding-bottom: 1rem;
     color: #7888A8;
-    font-family: 'Cormorant Garamond', serif;
+    font-family: 'Playfair Display', serif;
     font-weight: 300;
     font-style: italic;
+    opacity: 0.85;
 }
 
 .hero-divider {
