@@ -643,6 +643,12 @@ h1, h2, h3, h4, h5, h6 {
     z-index: 2;
 }
 
+.signup-title {
+    margin-top: 4rem !important;
+    padding-top: 3rem;
+    border-top: 1px solid rgba(139, 115, 85, 0.15);
+}
+
 .rsvp-button {
     display: inline-block;
     padding: 1.2rem 3rem;
