@@ -203,7 +203,7 @@ h1, h2, h3, h4, h5, h6 {
     width: 60px;
     height: 1px;
     background: linear-gradient(90deg, transparent, #7888A8, transparent);
-    margin: 3rem auto;
+    margin: 1.5rem auto 1.8rem;
 }
 
 .hero-tagline {
@@ -211,14 +211,14 @@ h1, h2, h3, h4, h5, h6 {
     font-size: 1.3rem;
     color: #4A5A7A;
     font-style: normal;
-    margin-bottom: 2rem;
+    margin-bottom: 0.8rem;
     font-weight: 300;
     letter-spacing: 0.5px;
 }
 
 .hero-date {
     font-size: 1.1rem;
-    margin-bottom: 0.8rem;
+    margin-bottom: 0.5rem;
     font-weight: 300;
     letter-spacing: 3px;
     text-transform: uppercase;
