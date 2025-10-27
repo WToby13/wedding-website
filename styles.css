@@ -64,8 +64,8 @@ p, span, div, em {
 }
 
 .loading-logo {
-    max-width: 550px;
-    width: 100%;
+    max-width: 700px;
+    width: 90%;
     height: auto;
     animation: fadeInScale 1.2s ease-out both;
     filter: drop-shadow(0 2px 10px rgba(0, 0, 0, 0.05));
@@ -344,6 +344,7 @@ p, span, div, em {
     letter-spacing: 2px;
     text-transform: uppercase;
     position: relative;
+    font-style: normal;
 }
 
 .section-title::after {
@@ -559,6 +560,7 @@ p, span, div, em {
     color: #2c2c2c;
     font-size: 1.1rem;
     line-height: 1.8;
+    font-style: normal;
 }
 
 .folder-text h4 {
@@ -570,6 +572,7 @@ p, span, div, em {
     text-transform: uppercase;
     letter-spacing: 1px;
     position: relative;
+    font-style: normal;
 }
 
 .folder-text h4:first-child {
@@ -589,6 +592,7 @@ p, span, div, em {
 .folder-text p {
     margin-bottom: 1.5rem;
     font-weight: 300;
+    font-style: normal;
 }
 
 .folder-text ul {
@@ -601,6 +605,7 @@ p, span, div, em {
     line-height: 1.7;
     font-weight: 300;
     position: relative;
+    font-style: normal;
 }
 
 .folder-text li::marker {
@@ -610,6 +615,11 @@ p, span, div, em {
 .folder-text strong {
     color: #2E3B5D;
     font-weight: 500;
+}
+
+.folder-text em {
+    font-style: normal;
+    font-weight: 300;
 }
 
 /* RSVP Section */
@@ -830,7 +840,8 @@ p, span, div, em {
 
 @media (max-width: 480px) {
     .loading-logo {
-        max-width: 340px;
+        max-width: 450px;
+        width: 85%;
     }
     
     .hero-palm {
