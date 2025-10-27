@@ -384,7 +384,7 @@ p, span, div, em {
 }
 
 .wedding-logo-img {
-    max-width: 450px;
+    max-width: 600px;
     height: auto;
     display: inline-block;
     opacity: 0.9;
@@ -920,6 +920,6 @@ p, span, div, em {
     }
     
     .wedding-logo-img {
-        max-width: 300px;
+        max-width: 400px;
     }
 }
