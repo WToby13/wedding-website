@@ -12,6 +12,7 @@ body {
     background-color: #fdfcfb;
     overflow-x: hidden;
     font-weight: 400;
+    font-style: normal;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
@@ -22,6 +23,11 @@ h1, h2, h3, h4, h5, h6 {
     font-weight: 400;
     line-height: 1.3;
     letter-spacing: 1px;
+    font-style: normal;
+}
+
+p, span, div, em {
+    font-style: normal !important;
 }
 
 .script-font {
@@ -158,9 +164,9 @@ h1, h2, h3, h4, h5, h6 {
     font-size: 0.95rem;
     letter-spacing: 5px;
     text-transform: uppercase;
-    color: #5B6B8C;
+    color: #000000;
     font-weight: 300;
-    margin-bottom: 2.5rem;
+    margin-bottom: 1rem;
     animation: fadeIn 1.2s ease-out 0.7s both;
 }
 
@@ -169,7 +175,7 @@ h1, h2, h3, h4, h5, h6 {
     align-items: center;
     justify-content: center;
     gap: 2rem;
-    margin-bottom: 2rem;
+    margin-bottom: 0.5rem;
 }
 
 .hero-name {
@@ -210,7 +216,7 @@ h1, h2, h3, h4, h5, h6 {
     color: #2E3B5D;
     font-family: 'Playfair Display', serif;
     font-weight: 300;
-    font-style: italic;
+    font-style: normal;
     opacity: 0.85;
 }
 
@@ -218,7 +224,7 @@ h1, h2, h3, h4, h5, h6 {
     width: 60px;
     height: 1px;
     background: linear-gradient(90deg, transparent, #7888A8, transparent);
-    margin: 1.5rem auto 1.8rem;
+    margin: 0.5rem auto 0.8rem;
 }
 
 .hero-tagline {
@@ -237,7 +243,7 @@ h1, h2, h3, h4, h5, h6 {
     font-weight: 300;
     letter-spacing: 1px;
     text-transform: none;
-    color: #2E3B5D;
+    color: #000000;
 }
 
 .hero-location {
@@ -245,7 +251,7 @@ h1, h2, h3, h4, h5, h6 {
     font-size: 1rem;
     font-style: normal;
     margin-bottom: 0.5rem;
-    color: #2E3B5D;
+    color: #000000;
     font-weight: 300;
     letter-spacing: 1px;
 }
@@ -255,7 +261,7 @@ h1, h2, h3, h4, h5, h6 {
     font-size: 1rem;
     font-style: normal;
     margin-bottom: 5rem;
-    color: #5B6B8C;
+    color: #000000;
     font-weight: 300;
     letter-spacing: 1px;
 }
@@ -354,7 +360,7 @@ h1, h2, h3, h4, h5, h6 {
 .section-subtitle {
     text-align: center;
     font-size: 1.5rem;
-    color: #5B6B8C;
+    color: #000000;
     margin-bottom: 3rem;
     font-style: normal;
     font-weight: 300;
@@ -649,7 +655,7 @@ h1, h2, h3, h4, h5, h6 {
     font-size: 1.2rem;
     color: #5B6B8C;
     margin-bottom: 3rem;
-    font-style: italic;
+    font-style: normal;
     position: relative;
     z-index: 2;
 }
