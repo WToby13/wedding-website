@@ -625,6 +625,19 @@ p, span, div, em {
     font-weight: 500;
 }
 
+.folder-text a {
+    color: #2E3B5D;
+    text-decoration: underline;
+    text-decoration-color: rgba(46, 59, 93, 0.3);
+    text-underline-offset: 3px;
+    transition: all 0.3s ease;
+}
+
+.folder-text a:hover {
+    color: #4A5A7A;
+    text-decoration-color: #4A5A7A;
+}
+
 .folder-text em {
     font-style: normal;
     font-weight: 300;
