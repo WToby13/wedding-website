@@ -352,7 +352,7 @@ p, span, div, em {
     font-size: 2.8rem;
     font-weight: 300;
     letter-spacing: 1px;
-    text-transform: lowercase;
+    text-transform: none;
     display: block;
     margin-top: 0.5rem;
     line-height: 1.2;
