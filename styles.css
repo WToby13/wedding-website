@@ -347,6 +347,14 @@ p, span, div, em {
     font-style: normal;
 }
 
+.elegant-dash {
+    font-style: normal;
+    font-weight: 300;
+    display: inline-block;
+    transform: rotate(0deg);
+    letter-spacing: 0;
+}
+
 .section-title::after {
     content: '';
     position: absolute;
