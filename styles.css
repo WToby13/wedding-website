@@ -336,25 +336,27 @@ p, span, div, em {
 }
 
 .section-title {
-    font-size: 3.5rem;
+    font-size: 4.5rem;
     text-align: center;
     color: #2E3B5D;
     margin-bottom: 1.5rem;
-    font-weight: 300;
+    font-weight: 400;
     letter-spacing: 2px;
-    text-transform: uppercase;
+    text-transform: none;
     position: relative;
     font-style: normal;
+    font-family: 'Alex Brush', cursive;
 }
 
 .section-subtitle-inline {
-    font-size: 2rem;
+    font-size: 2.8rem;
     font-weight: 300;
     letter-spacing: 1px;
     text-transform: lowercase;
     display: block;
     margin-top: 0.5rem;
     line-height: 1.2;
+    font-family: 'Cormorant Garamond', serif;
 }
 
 .elegant-dash {
@@ -939,7 +941,11 @@ p, span, div, em {
     }
     
     .section-title {
-        font-size: 2rem;
+        font-size: 2.5rem;
+    }
+    
+    .section-subtitle-inline {
+        font-size: 1.5rem;
     }
     
     .wedding-logo-img {
