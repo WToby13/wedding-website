@@ -347,6 +347,16 @@ p, span, div, em {
     font-style: normal;
 }
 
+.section-subtitle-inline {
+    font-size: 2rem;
+    font-weight: 300;
+    letter-spacing: 1px;
+    text-transform: lowercase;
+    display: block;
+    margin-top: 0.5rem;
+    line-height: 1.2;
+}
+
 .elegant-dash {
     font-style: normal;
     font-weight: 300;
