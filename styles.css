@@ -201,12 +201,14 @@ p, span, div, em {
     display: inline;
     line-height: 1.1;
     color: #2E3B5D;
-    font-weight: 400;
-    letter-spacing: 1px;
+    font-weight: 300;
+    letter-spacing: 2px;
     opacity: 1;
+    font-family: 'Cormorant Garamond', serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
+    text-transform: uppercase;
 }
 
 .hero-ampersand {
