@@ -979,7 +979,7 @@ p, span, div, em {
 
 .rsvp-logo-img {
     max-width: 400px;
-    width: 100%;
+    width: 80%;
     height: auto;
 }
 
@@ -1128,7 +1128,8 @@ p, span, div, em {
     }
     
     .rsvp-logo-img {
-        max-width: 280px;
+        width: 80%;
+        max-width: none;
     }
     
     .rsvp-instructions {
@@ -1159,6 +1160,7 @@ p, span, div, em {
     }
     
     .rsvp-logo-img {
-        max-width: 250px;
+        width: 80%;
+        max-width: none;
     }
 }
