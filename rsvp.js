@@ -44,9 +44,8 @@ document.getElementById('rsvp-form').addEventListener('submit', async function(e
     submitBtn.textContent = 'Submitting...';
     submitBtn.disabled = true;
     
-    // IMPORTANT: Replace this URL with your Google Apps Script web app URL
-    // Get this URL after deploying your Google Apps Script (see google-apps-script.js for instructions)
-    const scriptURL = 'YOUR_GOOGLE_APPS_SCRIPT_URL';
+    // Google Apps Script web app URL for form submissions
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbw8MwX2eJpP3Q1BewOoPukZMNyEoAVd-CTcn48jRmlUn8rfwCHvBwIWRvuZqebCrHT9Ig/exec';
     
     // If URL not configured, show error
     if (scriptURL === 'YOUR_GOOGLE_APPS_SCRIPT_URL') {
