@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RSVP - Andrea & Tobias Wedding</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Playfair+Display:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Alex+Brush&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="rsvp-page">
+        <div class="rsvp-container">
+            <div class="rsvp-logo">
+                <img src="new-wedding-logo.png" alt="Andrea & Tobias" class="rsvp-logo-img">
+            </div>
+            
+            <p class="rsvp-instructions">Please submit one per guest, if you have any question or would like to make changes, reach out to us by mail olsenandrea96@gmail.com</p>
+            
+            <form id="rsvp-form" class="rsvp-form">
+                <div class="form-group">
+                    <label for="guest-name">Your name</label>
+                    <input type="text" id="guest-name" name="guestName" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Will you be joining the wedding?</label>
+                    <div class="toggle-group">
+                        <button type="button" class="toggle-btn" data-value="Yes">Yes</button>
+                        <button type="button" class="toggle-btn" data-value="No">No</button>
+                    </div>
+                    <input type="hidden" id="joining" name="joining" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="dietary">Any dietary considerations (vegan, vegetarian, etc.)</label>
+                    <textarea id="dietary" name="dietary" rows="3" placeholder="Please specify any dietary restrictions or allergies"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Do you plan to join the tennis tournament?</label>
+                    <div class="toggle-group three-options">
+                        <button type="button" class="toggle-btn" data-value="Yes (as a player)">Yes (as a player)</button>
+                        <button type="button" class="toggle-btn" data-value="Yes (as a spectator)">Yes (as a spectator)</button>
+                        <button type="button" class="toggle-btn" data-value="No">No</button>
+                    </div>
+                    <input type="hidden" id="tennis" name="tennis" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Do you plan to join the Sunday sunbeds?</label>
+                    <div class="toggle-group">
+                        <button type="button" class="toggle-btn" data-value="Yes">Yes</button>
+                        <button type="button" class="toggle-btn" data-value="No">No</button>
+                    </div>
+                    <input type="hidden" id="sunbeds" name="sunbeds" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="message">Message to the bride & groom (optional)</label>
+                    <textarea id="message" name="message" rows="4" placeholder="Share your thoughts or well wishes..."></textarea>
+                </div>
+                
+                <button type="submit" class="rsvp-submit-btn">Submit</button>
+            </form>
+            
+            <div id="success-message" class="success-message hidden">
+                <p>Thank you! Your RSVP has been submitted successfully.</p>
+            </div>
+        </div>
+    </div>
+    
+    <script src="rsvp.js"></script>
+</body>
+</html>
+

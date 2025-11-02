@@ -952,3 +952,213 @@ p, span, div, em {
         max-width: 400px;
     }
 }
+
+/* RSVP Page Styles */
+.rsvp-page {
+    min-height: 100vh;
+    background-color: #fdfcfb;
+    padding: 4rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.rsvp-container {
+    max-width: 700px;
+    width: 100%;
+    background: white;
+    border-radius: 20px;
+    padding: 4rem 3rem;
+    box-shadow: 0 8px 30px rgba(139, 115, 85, 0.1);
+}
+
+.rsvp-logo {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.rsvp-logo-img {
+    max-width: 400px;
+    width: 100%;
+    height: auto;
+}
+
+.rsvp-instructions {
+    text-align: center;
+    font-size: 0.95rem;
+    color: #5B6B8C;
+    margin-bottom: 3rem;
+    line-height: 1.6;
+    font-family: 'Cormorant Garamond', serif;
+}
+
+.rsvp-form {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.form-group label {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.2rem;
+    color: #2E3B5D;
+    font-weight: 400;
+    letter-spacing: 0.5px;
+}
+
+.form-group input[type="text"],
+.form-group textarea {
+    padding: 1rem;
+    border: 1px solid rgba(139, 115, 85, 0.2);
+    border-radius: 8px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    color: #2E3B5D;
+    background-color: #fafafa;
+    transition: all 0.3s ease;
+}
+
+.form-group input[type="text"]:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #7888A8;
+    background-color: white;
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.toggle-group {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.toggle-group.three-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+}
+
+.toggle-btn {
+    flex: 1;
+    padding: 1rem 2rem;
+    border: 1px solid rgba(139, 115, 85, 0.3);
+    border-radius: 8px;
+    background-color: white;
+    color: #2E3B5D;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    font-weight: 300;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 120px;
+}
+
+.toggle-btn:hover {
+    border-color: #7888A8;
+    background-color: #f8f6f3;
+}
+
+.toggle-btn.active {
+    background: linear-gradient(135deg, #2E3B5D 0%, #4A5A7A 100%);
+    color: white;
+    border-color: #2E3B5D;
+}
+
+.rsvp-submit-btn {
+    padding: 1.3rem 3rem;
+    background: linear-gradient(135deg, #2E3B5D 0%, #4A5A7A 100%);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.2rem;
+    font-weight: 500;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.4s ease;
+    box-shadow: 0 8px 25px rgba(46, 59, 93, 0.3);
+    margin-top: 1rem;
+}
+
+.rsvp-submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 35px rgba(46, 59, 93, 0.4);
+}
+
+.rsvp-submit-btn:active {
+    transform: translateY(0);
+}
+
+.success-message {
+    text-align: center;
+    padding: 2rem;
+    background-color: #f0f8f0;
+    border-radius: 8px;
+    margin-top: 2rem;
+}
+
+.success-message p {
+    color: #2E3B5D;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem;
+}
+
+.success-message.hidden {
+    display: none;
+}
+
+.hidden {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .rsvp-container {
+        padding: 2.5rem 1.5rem;
+    }
+    
+    .rsvp-logo-img {
+        max-width: 280px;
+    }
+    
+    .rsvp-instructions {
+        font-size: 0.85rem;
+    }
+    
+    .toggle-group.three-options {
+        grid-template-columns: 1fr;
+    }
+    
+    .form-group label {
+        font-size: 1.1rem;
+    }
+    
+    .rsvp-submit-btn {
+        padding: 1.1rem 2rem;
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .rsvp-page {
+        padding: 2rem 1rem;
+    }
+    
+    .rsvp-container {
+        padding: 2rem 1rem;
+    }
+    
+    .rsvp-logo-img {
+        max-width: 250px;
+    }
+}
