@@ -27,7 +27,6 @@ document.getElementById('rsvp-form').addEventListener('submit', async function(e
         dietary: document.getElementById('dietary').value.trim(),
         tennis: document.getElementById('tennis').value || '',
         sunbeds: document.getElementById('sunbeds').value || '',
-        message: document.getElementById('message').value.trim(),
         timestamp: new Date().toISOString()
     };
     
