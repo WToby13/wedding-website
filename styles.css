@@ -658,14 +658,10 @@ p, span, div, em {
     font-weight: 300;
 }
 
-/* Cursive detail lines under dress code (e.g. Saturday at Le Repère) */
-.folder-text em.dress-code-cursive {
-    font-style: normal;
-    font-weight: 400;
-    font-family: 'Alex Brush', cursive;
-    font-size: 1.35rem;
-    letter-spacing: 0.03em;
-    line-height: 1.5;
+/* Space between main event line + dress code title and extra dress code details */
+.folder-text .dress-code-extra-lines {
+    display: block;
+    margin-top: 0.85rem;
 }
 
 /* RSVP Section */
