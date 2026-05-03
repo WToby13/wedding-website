@@ -99,8 +99,10 @@ document.getElementById('dashboard-back-btn').addEventListener('click', () => {
 
 function renderDashboard() {
     document.getElementById('dashboard-email-label').textContent = state.email;
+    const hasGuests = state.guests.length > 0;
+    document.querySelector('#view-dashboard .rsvp-view-title').textContent = hasGuests ? 'See You Soon!' : 'Your Guests';
     const container = document.getElementById('guests-container');
-    const isEmpty = state.guests.length === 0;
+    const isEmpty = !hasGuests;
     container.classList.toggle('guests-grid--empty', isEmpty);
 
     const guestCards = state.guests.map((g, i) => {
@@ -133,7 +135,7 @@ function renderDashboard() {
                         </div>` : ''}
                     </div>
                 ` : ''}
-                ${attending && !g.dinner ? `<div class="card-dinner-nudge">Select dinner</div>` : ''}
+                ${attending && !g.dinner ? `<button class="card-dinner-nudge" onclick="openEditForm(${i})">Select dinner</button>` : ''}
                 <button class="card-edit-btn" onclick="openEditForm(${i})">Edit</button>
             </div>
         `;

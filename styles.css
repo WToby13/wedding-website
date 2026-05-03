@@ -1408,6 +1408,14 @@ p, span, div, em {
     padding: 0.4rem 0.75rem;
     display: inline-block;
     align-self: flex-start;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.card-dinner-nudge:hover {
+    background-color: rgba(59, 110, 165, 0.15);
+    color: #2a5490;
 }
 
 .card-edit-btn {
