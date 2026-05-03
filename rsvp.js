@@ -51,8 +51,8 @@ function handleEmailContinue() {
         emailInput.focus();
         return;
     }
-    // Navigate to the email URL — the page reload handles showing the dashboard
-    window.location.href = `/rsvp/${encodeURIComponent(email)}`;
+    // Navigate to the email URL — keep @ unencoded for a clean readable URL
+    window.location.href = `/rsvp/${email}`;
 }
 
 // ─── Guests Fetch ─────────────────────────────────────────────────────────────
