@@ -36,6 +36,7 @@ const COL = {
     NOTES: 6,
     TIMESTAMP: 7,
     EMAIL: 8,
+    LINK: 9,
 };
 
 // ─── GET: look up RSVPs by email ──────────────────────────────────────────────
@@ -91,6 +92,7 @@ function doPost(e) {
         const data = JSON.parse(e.postData.contents);
         const sheet = getOrCreateSheet();
 
+        const email = data.email || '';
         const rowData = [
             data.guestName || '',
             data.joining || '',
@@ -100,7 +102,8 @@ function doPost(e) {
             data.sunbeds || '',
             data.notes || '',
             new Date().toLocaleString(),
-            data.email || '',
+            email,
+            email ? `https://olsenkeating.com/rsvp/${email}` : '',
         ];
 
         if (data.action === 'update' && data.rowIndex) {
@@ -133,7 +136,7 @@ function getOrCreateSheet() {
         sheet = ss.insertSheet(SHEET_NAME);
         sheet.appendRow([
             'Guest Name', 'Joining', 'Dinner Selection', 'Dietary considerations',
-            'Tennis Tournament', 'Sunday Sunbeds', 'Notes', 'Timestamp', 'Email',
+            'Tennis Tournament', 'Sunday Sunbeds', 'Notes', 'Timestamp', 'Email', 'Link',
         ]);
     }
     return sheet;

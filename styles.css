@@ -1433,6 +1433,33 @@ p, span, div, em {
     background-color: rgba(46, 59, 93, 0.04);
 }
 
+/* ─── Skeleton Loading Cards ─────────────────────────────────────────────── */
+
+@keyframes shimmer {
+    0%   { background-position: -600px 0; }
+    100% { background-position: 600px 0; }
+}
+
+.guest-card-skeleton {
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.skeleton-line {
+    border-radius: 6px;
+    background: linear-gradient(90deg, #f0ede7 25%, #e8e4de 50%, #f0ede7 75%);
+    background-size: 600px 100%;
+    animation: shimmer 1.4s infinite linear;
+}
+
+.skeleton-name   { height: 22px; width: 60%; }
+.skeleton-badge  { height: 18px; width: 30%; border-radius: 20px; }
+.skeleton-details { display: flex; flex-direction: column; gap: 0.6rem; padding-top: 0.5rem; border-top: 1px solid rgba(139,115,85,0.08); }
+.skeleton-detail { height: 14px; width: 80%; }
+.skeleton-detail:nth-child(2) { width: 65%; }
+
 /* ─── Add Guest Placeholder Card ─────────────────────────────────────────── */
 
 .guest-card-placeholder {

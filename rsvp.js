@@ -58,6 +58,7 @@ function handleEmailContinue() {
 // ─── Guests Fetch ─────────────────────────────────────────────────────────────
 
 async function loadGuests() {
+    renderSkeletons();
     try {
         const res = await fetch(`${SCRIPT_URL}?action=getByEmail&email=${encodeURIComponent(state.email)}`);
         const data = await res.json();
@@ -66,6 +67,28 @@ async function loadGuests() {
         state.guests = [];
     }
     renderDashboard();
+}
+
+function renderSkeletons() {
+    const container = document.getElementById('guests-container');
+    container.classList.remove('guests-grid--empty');
+    container.innerHTML = `
+        <div class="guest-card guest-card-skeleton">
+            <div class="skeleton-line skeleton-name"></div>
+            <div class="skeleton-line skeleton-badge"></div>
+            <div class="skeleton-details">
+                <div class="skeleton-line skeleton-detail"></div>
+                <div class="skeleton-line skeleton-detail"></div>
+            </div>
+        </div>
+        <div class="guest-card guest-card-skeleton">
+            <div class="skeleton-line skeleton-name"></div>
+            <div class="skeleton-line skeleton-badge"></div>
+            <div class="skeleton-details">
+                <div class="skeleton-line skeleton-detail"></div>
+            </div>
+        </div>
+    `;
 }
 
 // ─── Dashboard View ───────────────────────────────────────────────────────────
