@@ -9,62 +9,99 @@
 </head>
 <body>
     <div class="rsvp-page">
-        <div class="rsvp-container">
+
+        <!-- View 1: Email Entry -->
+        <div id="view-email" class="rsvp-view rsvp-container">
             <div class="rsvp-logo">
                 <img src="new-wedding-logo.png" alt="Andrea & Tobias" class="rsvp-logo-img">
             </div>
-            
-            <p class="rsvp-instructions">Please submit one per guest, if you have any question or would like to make changes, reach out to us by mail olsenandrea96@gmail.com</p>
-            
+            <h2 class="rsvp-view-title">Your RSVP</h2>
+            <p class="rsvp-instructions">Enter your email address to view and manage your RSVPs.</p>
+            <div class="form-group">
+                <label for="email-input">Email address</label>
+                <input type="email" id="email-input" placeholder="you@example.com" autocomplete="email">
+                <p id="email-error" class="field-error hidden">Please enter a valid email address.</p>
+            </div>
+            <button id="email-continue-btn" class="rsvp-submit-btn" style="margin-top: 1rem;">Continue</button>
+        </div>
+
+        <!-- View 2: Dashboard -->
+        <div id="view-dashboard" class="rsvp-view rsvp-dashboard-page hidden">
+            <div class="dashboard-header">
+                <button class="rsvp-back-btn" id="dashboard-back-btn">← Back</button>
+                <div class="rsvp-logo dashboard-logo">
+                    <img src="new-wedding-logo.png" alt="Andrea & Tobias" class="rsvp-logo-img">
+                </div>
+                <h2 class="rsvp-view-title">Your Guests</h2>
+                <p class="dashboard-email-label" id="dashboard-email-label"></p>
+            </div>
+            <div id="guests-container" class="guests-grid"></div>
+            <button class="add-guest-fab" id="add-guest-btn" aria-label="Add guest">+</button>
+        </div>
+
+        <!-- View 3: Add / Edit Form -->
+        <div id="view-form" class="rsvp-view rsvp-container hidden">
+            <button class="rsvp-back-btn" id="form-back-btn">← Back</button>
+            <div class="rsvp-logo">
+                <img src="new-wedding-logo.png" alt="Andrea & Tobias" class="rsvp-logo-img">
+            </div>
+            <h2 class="rsvp-view-title" id="form-title">Add Guest</h2>
+
             <form id="rsvp-form" class="rsvp-form">
                 <div class="form-group">
-                    <label for="guest-name">Your name</label>
-                    <input type="text" id="guest-name" name="guestName" required>
+                    <label for="guest-name">Full name</label>
+                    <input type="text" id="guest-name" name="guestName" required autocomplete="off">
                 </div>
-                
+
                 <div class="form-group">
                     <label>Will you be joining the wedding?</label>
                     <div class="toggle-group">
                         <button type="button" class="toggle-btn" data-value="Yes">Yes</button>
                         <button type="button" class="toggle-btn" data-value="No">No</button>
                     </div>
-                    <input type="hidden" id="joining" name="joining" required>
+                    <input type="hidden" id="joining" name="joining">
                 </div>
-                
+
+                <div class="form-group attending-only hidden">
+                    <label>Dinner selection</label>
+                    <div class="toggle-group three-options">
+                        <button type="button" class="toggle-btn" data-value="Meat">Meat</button>
+                        <button type="button" class="toggle-btn" data-value="Fish">Fish</button>
+                        <button type="button" class="toggle-btn" data-value="Vegetarian">Vegetarian</button>
+                    </div>
+                    <input type="hidden" id="dinner" name="dinner">
+                </div>
+
                 <div class="form-group">
-                    <label for="dietary">Any dietary considerations (vegan, vegetarian, allergies, etc.)</label>
+                    <label for="dietary">Any dietary considerations (allergies, intolerances, etc.)</label>
                     <textarea id="dietary" name="dietary" rows="3" placeholder="Please specify any dietary restrictions or allergies"></textarea>
                 </div>
-                
-                <div class="form-group">
+
+                <div class="form-group attending-only hidden">
                     <label>Do you plan to join the tennis tournament?</label>
                     <div class="toggle-group three-options">
                         <button type="button" class="toggle-btn" data-value="Yes (as a player)">Yes (as a player)</button>
                         <button type="button" class="toggle-btn" data-value="Yes (as a spectator)">Yes (as a spectator)</button>
                         <button type="button" class="toggle-btn" data-value="No">No</button>
                     </div>
-                    <input type="hidden" id="tennis" name="tennis" required>
+                    <input type="hidden" id="tennis" name="tennis">
                 </div>
-                
-                <div class="form-group">
+
+                <div class="form-group attending-only hidden">
                     <label>Do you plan to join the Sunday sunbeds?</label>
                     <div class="toggle-group">
                         <button type="button" class="toggle-btn" data-value="Yes">Yes</button>
                         <button type="button" class="toggle-btn" data-value="No">No</button>
                     </div>
-                    <input type="hidden" id="sunbeds" name="sunbeds" required>
+                    <input type="hidden" id="sunbeds" name="sunbeds">
                 </div>
-                
-                <button type="submit" class="rsvp-submit-btn">Submit</button>
+
+                <button type="submit" class="rsvp-submit-btn">Save RSVP</button>
             </form>
-            
-            <div id="success-message" class="success-message hidden">
-                <p>Thank you! Your RSVP has been submitted successfully.</p>
-            </div>
         </div>
+
     </div>
-    
+
     <script src="rsvp.js"></script>
 </body>
 </html>
-

@@ -1,92 +1,280 @@
-// Toggle button functionality
-document.querySelectorAll('.toggle-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
+// Google Apps Script web app URL
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbweH5XO1QOkghNKIYKALESUgnlpseC4JkLuIPtRCtNvlZDytACz2wqlFeL_uWTWNshfUw/exec';
+
+// App state
+const state = {
+    email: '',
+    guests: [],
+    editingIndex: -1, // -1 = new guest, >= 0 = editing guest at that index
+};
+
+// ─── View Management ─────────────────────────────────────────────────────────
+
+function showView(id) {
+    document.querySelectorAll('.rsvp-view').forEach(v => v.classList.add('hidden'));
+    document.getElementById(id).classList.remove('hidden');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ─── Email View ───────────────────────────────────────────────────────────────
+
+const emailInput = document.getElementById('email-input');
+const emailContinueBtn = document.getElementById('email-continue-btn');
+const emailError = document.getElementById('email-error');
+
+emailContinueBtn.addEventListener('click', handleEmailContinue);
+emailInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') handleEmailContinue();
+});
+
+async function handleEmailContinue() {
+    const email = emailInput.value.trim().toLowerCase();
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        emailError.classList.remove('hidden');
+        emailInput.focus();
+        return;
+    }
+    emailError.classList.add('hidden');
+    state.email = email;
+
+    emailContinueBtn.textContent = 'Loading...';
+    emailContinueBtn.disabled = true;
+
+    await loadGuests();
+
+    emailContinueBtn.textContent = 'Continue';
+    emailContinueBtn.disabled = false;
+}
+
+// ─── Guests Fetch ─────────────────────────────────────────────────────────────
+
+async function loadGuests() {
+    try {
+        const res = await fetch(`${SCRIPT_URL}?action=getByEmail&email=${encodeURIComponent(state.email)}`);
+        const data = await res.json();
+        state.guests = data.guests || [];
+    } catch (_err) {
+        // If the script hasn't been redeployed yet or CORS fails, start with empty list
+        state.guests = [];
+    }
+    renderDashboard();
+    showView('view-dashboard');
+}
+
+// ─── Dashboard View ───────────────────────────────────────────────────────────
+
+document.getElementById('dashboard-back-btn').addEventListener('click', () => {
+    showView('view-email');
+});
+
+document.getElementById('add-guest-btn').addEventListener('click', () => {
+    openAddForm();
+});
+
+function renderDashboard() {
+    document.getElementById('dashboard-email-label').textContent = state.email;
+    const container = document.getElementById('guests-container');
+
+    if (state.guests.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-state-icon">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                        <circle cx="9" cy="7" r="4"/>
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                    </svg>
+                </div>
+                <p class="empty-state-text">Add your first guest</p>
+            </div>
+        `;
+        return;
+    }
+
+    container.innerHTML = state.guests.map((g, i) => {
+        const attending = g.joining === 'Yes';
+        return `
+            <div class="guest-card">
+                <div class="guest-card-top">
+                    <h3 class="guest-card-name">${escapeHtml(g.guestName)}</h3>
+                    <span class="attendance-badge ${attending ? 'badge-attending' : 'badge-not-attending'}">
+                        ${attending ? 'Attending' : 'Not attending'}
+                    </span>
+                </div>
+                ${attending ? `
+                    <div class="guest-card-details">
+                        ${g.dinner ? `<div class="card-detail-row">
+                            <span class="card-detail-label">Dinner</span>
+                            <span class="card-detail-value">${escapeHtml(g.dinner)}</span>
+                        </div>` : ''}
+                        ${g.tennis ? `<div class="card-detail-row">
+                            <span class="card-detail-label">Tennis</span>
+                            <span class="card-detail-value">${escapeHtml(g.tennis)}</span>
+                        </div>` : ''}
+                        ${g.sunbeds ? `<div class="card-detail-row">
+                            <span class="card-detail-label">Sunday beach</span>
+                            <span class="card-detail-value">${g.sunbeds === 'Yes' ? 'Joining' : 'Not joining'}</span>
+                        </div>` : ''}
+                        ${g.dietary ? `<div class="card-detail-row card-detail-dietary">
+                            <span class="card-detail-label">Dietary</span>
+                            <span class="card-detail-value">${escapeHtml(g.dietary)}</span>
+                        </div>` : ''}
+                    </div>
+                ` : ''}
+                <button class="card-edit-btn" onclick="openEditForm(${i})">Edit</button>
+            </div>
+        `;
+    }).join('');
+}
+
+function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str || '';
+    return div.innerHTML;
+}
+
+// ─── Form View ────────────────────────────────────────────────────────────────
+
+document.getElementById('form-back-btn').addEventListener('click', () => {
+    showView('view-dashboard');
+    renderDashboard();
+});
+
+function openAddForm() {
+    state.editingIndex = -1;
+    document.getElementById('form-title').textContent = 'Add Guest';
+    resetForm();
+    showView('view-form');
+}
+
+function openEditForm(index) {
+    state.editingIndex = index;
+    document.getElementById('form-title').textContent = 'Edit Guest';
+    fillForm(state.guests[index]);
+    showView('view-form');
+}
+
+function resetForm() {
+    document.getElementById('rsvp-form').reset();
+    document.querySelectorAll('#view-form .toggle-btn').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('#view-form input[type="hidden"]').forEach(inp => { inp.value = ''; });
+    updateAttendingFields();
+}
+
+function fillForm(guest) {
+    document.getElementById('guest-name').value = guest.guestName || '';
+    document.getElementById('dietary').value = guest.dietary || '';
+    setToggleValue('joining', guest.joining);
+    setToggleValue('dinner', guest.dinner);
+    setToggleValue('tennis', guest.tennis);
+    setToggleValue('sunbeds', guest.sunbeds);
+    updateAttendingFields();
+}
+
+function setToggleValue(fieldId, value) {
+    const input = document.getElementById(fieldId);
+    if (!input) return;
+    input.value = value || '';
+    const group = input.closest('.form-group');
+    if (!group) return;
+    group.querySelectorAll('.toggle-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-value') === value);
+    });
+}
+
+// Show or hide the attending-only fields based on the "joining" toggle
+function updateAttendingFields() {
+    const joining = document.getElementById('joining').value;
+    document.querySelectorAll('#view-form .attending-only').forEach(field => {
+        field.classList.toggle('hidden', joining !== 'Yes');
+    });
+}
+
+// ─── Toggle Buttons ───────────────────────────────────────────────────────────
+
+document.querySelectorAll('#view-form .toggle-btn').forEach(btn => {
+    btn.addEventListener('click', function () {
         const group = this.closest('.toggle-group');
         const hiddenInput = this.closest('.form-group').querySelector('input[type="hidden"]');
-        
-        // Remove active class from all buttons in the group
+
         group.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
-        
-        // Add active class to clicked button
         this.classList.add('active');
-        
-        // Update hidden input value
+
         if (hiddenInput) {
             hiddenInput.value = this.getAttribute('data-value');
+            if (hiddenInput.id === 'joining') {
+                updateAttendingFields();
+            }
         }
     });
 });
 
-// Form submission
-document.getElementById('rsvp-form').addEventListener('submit', async function(e) {
+// ─── Form Submission ──────────────────────────────────────────────────────────
+
+document.getElementById('rsvp-form').addEventListener('submit', async function (e) {
     e.preventDefault();
-    
+
+    const joining = document.getElementById('joining').value;
+
     const formData = {
+        action: state.editingIndex === -1 ? 'create' : 'update',
+        rowIndex: state.editingIndex >= 0 ? state.guests[state.editingIndex].rowIndex : null,
         guestName: document.getElementById('guest-name').value.trim(),
-        joining: document.getElementById('joining').value || '',
+        joining,
+        dinner: joining === 'Yes' ? (document.getElementById('dinner').value || '') : '',
         dietary: document.getElementById('dietary').value.trim(),
-        tennis: document.getElementById('tennis').value || '',
-        sunbeds: document.getElementById('sunbeds').value || '',
-        timestamp: new Date().toISOString()
+        tennis: joining === 'Yes' ? (document.getElementById('tennis').value || '') : '',
+        sunbeds: joining === 'Yes' ? (document.getElementById('sunbeds').value || '') : '',
+        email: state.email,
     };
-    
-    // Validate required fields
-    if (!formData.guestName || !formData.joining || !formData.tennis || !formData.sunbeds) {
-        alert('Please fill in all required fields.');
+
+    if (!formData.guestName) {
+        alert('Please enter the guest\'s name.');
         return;
     }
-    
-    // Submit to Google Sheets via Apps Script
-    const submitBtn = document.querySelector('.rsvp-submit-btn');
-    const originalText = submitBtn.textContent;
-    
-    submitBtn.textContent = 'Submitting...';
+    if (!formData.joining) {
+        alert('Please indicate whether this guest will be joining.');
+        return;
+    }
+
+    const submitBtn = document.querySelector('#view-form .rsvp-submit-btn');
+    const origText = submitBtn.textContent;
+    submitBtn.textContent = 'Saving...';
     submitBtn.disabled = true;
-    
-    // Google Apps Script web app URL for form submissions
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbw8MwX2eJpP3Q1BewOoPukZMNyEoAVd-CTcn48jRmlUn8rfwCHvBwIWRvuZqebCrHT9Ig/exec';
-    
-    // If URL not configured, show error
-    if (scriptURL === 'YOUR_GOOGLE_APPS_SCRIPT_URL') {
-        alert('RSVP form is not yet configured. Please contact the website administrator.');
-        submitBtn.textContent = originalText;
-        submitBtn.disabled = false;
-        return;
-    }
-    
+
     try {
-        // Submit form data
-        await fetch(scriptURL, {
+        await fetch(SCRIPT_URL, {
             method: 'POST',
             mode: 'no-cors',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(formData)
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(formData),
         });
-        
-        // Show success message (no-cors means we can't verify, but we assume success)
-        document.getElementById('rsvp-form').classList.add('hidden');
-        document.getElementById('success-message').classList.remove('hidden');
-        
-        // Scroll to success message
-        document.getElementById('success-message').scrollIntoView({ behavior: 'smooth', block: 'center' });
-        
-        // Reset form after showing success
-        setTimeout(() => {
-            this.reset();
-            document.querySelectorAll('.toggle-btn').forEach(btn => btn.classList.remove('active'));
-            document.getElementById('rsvp-form').classList.remove('hidden');
-            document.getElementById('success-message').classList.add('hidden');
-            submitBtn.textContent = originalText;
-            submitBtn.disabled = false;
-        }, 5000); // Reset after 5 seconds
-        
-    } catch (error) {
-        console.error('Error:', error);
-        alert('There was an error submitting your RSVP. Please try again or contact us directly at olsenandrea96@gmail.com');
-        submitBtn.textContent = originalText;
+
+        // Optimistically update local state (no-cors means we can't read the response)
+        const guestObj = {
+            rowIndex: state.editingIndex >= 0 ? state.guests[state.editingIndex].rowIndex : null,
+            guestName: formData.guestName,
+            joining: formData.joining,
+            dinner: formData.dinner,
+            dietary: formData.dietary,
+            tennis: formData.tennis,
+            sunbeds: formData.sunbeds,
+        };
+
+        if (state.editingIndex === -1) {
+            state.guests.push(guestObj);
+        } else {
+            state.guests[state.editingIndex] = guestObj;
+        }
+
+        showView('view-dashboard');
+        renderDashboard();
+
+    } catch (_err) {
+        alert('There was an error saving your RSVP. Please try again or contact us at olsenandrea96@gmail.com');
+    } finally {
+        submitBtn.textContent = origText;
         submitBtn.disabled = false;
     }
 });
-
