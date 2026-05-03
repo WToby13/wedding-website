@@ -8,13 +8,30 @@ const state = {
     editingIndex: -1, // -1 = new guest, >= 0 = editing guest at that index
 };
 
-// ─── View Management ─────────────────────────────────────────────────────────
+// ─── URL Routing ─────────────────────────────────────────────────────────────
+
+function getEmailFromPath() {
+    const match = window.location.pathname.match(/^\/rsvp\/(.+)$/);
+    return match ? decodeURIComponent(match[1]) : null;
+}
 
 function showView(id) {
     document.querySelectorAll('.rsvp-view').forEach(v => v.classList.add('hidden'));
     document.getElementById(id).classList.remove('hidden');
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
+
+// On load: if there's an email in the URL, skip straight to the dashboard
+document.addEventListener('DOMContentLoaded', async () => {
+    const pathEmail = getEmailFromPath();
+    if (pathEmail) {
+        state.email = pathEmail;
+        showView('view-dashboard');
+        await loadGuests();
+    } else {
+        showView('view-email');
+    }
+});
 
 // ─── Email View ───────────────────────────────────────────────────────────────
 
@@ -27,23 +44,15 @@ emailInput.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') handleEmailContinue();
 });
 
-async function handleEmailContinue() {
+function handleEmailContinue() {
     const email = emailInput.value.trim().toLowerCase();
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
         emailError.classList.remove('hidden');
         emailInput.focus();
         return;
     }
-    emailError.classList.add('hidden');
-    state.email = email;
-
-    emailContinueBtn.textContent = 'Loading...';
-    emailContinueBtn.disabled = true;
-
-    await loadGuests();
-
-    emailContinueBtn.textContent = 'Continue';
-    emailContinueBtn.disabled = false;
+    // Navigate to the email URL — the page reload handles showing the dashboard
+    window.location.href = `/rsvp/${encodeURIComponent(email)}`;
 }
 
 // ─── Guests Fetch ─────────────────────────────────────────────────────────────
@@ -54,17 +63,15 @@ async function loadGuests() {
         const data = await res.json();
         state.guests = data.guests || [];
     } catch (_err) {
-        // If the script hasn't been redeployed yet or CORS fails, start with empty list
         state.guests = [];
     }
     renderDashboard();
-    showView('view-dashboard');
 }
 
 // ─── Dashboard View ───────────────────────────────────────────────────────────
 
 document.getElementById('dashboard-back-btn').addEventListener('click', () => {
-    showView('view-email');
+    window.location.href = '/rsvp';
 });
 
 function renderDashboard() {

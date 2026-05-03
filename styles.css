@@ -1200,7 +1200,7 @@ p, span, div, em {
 }
 
 /* Email view — center everything */
-#view-email {
+#view-email:not(.hidden) {
     display: flex;
     flex-direction: column;
     align-items: center;

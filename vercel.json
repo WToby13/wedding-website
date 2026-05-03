@@ -1,9 +1,8 @@
 {
   "rewrites": [
     {
-      "source": "/rsvp",
+      "source": "/rsvp/:path*",
       "destination": "/rsvp.html"
     }
   ]
 }
-
