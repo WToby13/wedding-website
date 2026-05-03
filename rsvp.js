@@ -1,5 +1,5 @@
 // Google Apps Script web app URL
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbweH5XO1QOkghNKIYKALESUgnlpseC4JkLuIPtRCtNvlZDytACz2wqlFeL_uWTWNshfUw/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzgc9KXhNbx8Hwm3aZwukMmgbJsGIdPVTb-l0Bc3mPnMNBTw-KdQqmJeUPmNxtasVvMOw/exec';
 
 // App state
 const state = {
