@@ -1199,6 +1199,25 @@ p, span, div, em {
     margin-bottom: 0.5rem;
 }
 
+/* Email view — center everything */
+#view-email {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+#view-email .form-group {
+    width: 100%;
+    max-width: 400px;
+    text-align: left;
+}
+
+#view-email .rsvp-submit-btn {
+    width: 100%;
+    max-width: 400px;
+}
+
 /* Email input */
 .form-group input[type="email"] {
     padding: 1rem;
