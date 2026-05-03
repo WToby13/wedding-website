@@ -67,32 +67,13 @@ document.getElementById('dashboard-back-btn').addEventListener('click', () => {
     showView('view-email');
 });
 
-document.getElementById('add-guest-btn').addEventListener('click', () => {
-    openAddForm();
-});
-
 function renderDashboard() {
     document.getElementById('dashboard-email-label').textContent = state.email;
     const container = document.getElementById('guests-container');
+    const isEmpty = state.guests.length === 0;
+    container.classList.toggle('guests-grid--empty', isEmpty);
 
-    if (state.guests.length === 0) {
-        container.innerHTML = `
-            <div class="empty-state">
-                <div class="empty-state-icon">
-                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
-                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-                        <circle cx="9" cy="7" r="4"/>
-                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-                        <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-                    </svg>
-                </div>
-                <p class="empty-state-text">Add your first guest</p>
-            </div>
-        `;
-        return;
-    }
-
-    container.innerHTML = state.guests.map((g, i) => {
+    const guestCards = state.guests.map((g, i) => {
         const attending = g.joining === 'Yes';
         return `
             <div class="guest-card">
@@ -125,7 +106,16 @@ function renderDashboard() {
                 <button class="card-edit-btn" onclick="openEditForm(${i})">Edit</button>
             </div>
         `;
-    }).join('');
+    });
+
+    const placeholderCard = `
+        <button class="guest-card guest-card-placeholder" onclick="openAddForm()" aria-label="Add guest">
+            <span class="placeholder-plus">+</span>
+            <span class="placeholder-label">${isEmpty ? 'Add your first guest' : 'Add guest'}</span>
+        </button>
+    `;
+
+    container.innerHTML = [...guestCards, placeholderCard].join('');
 }
 
 function escapeHtml(str) {

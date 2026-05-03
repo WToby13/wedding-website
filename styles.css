@@ -1400,68 +1400,79 @@ p, span, div, em {
     background-color: rgba(46, 59, 93, 0.04);
 }
 
-/* ─── Empty State ─────────────────────────────────────────────────────────── */
+/* ─── Add Guest Placeholder Card ─────────────────────────────────────────── */
 
-.empty-state {
-    grid-column: 1 / -1;
-    text-align: center;
-    padding: 5rem 2rem;
+.guest-card-placeholder {
+    border: 1.5px dashed rgba(139, 115, 85, 0.3);
+    background: transparent;
+    cursor: pointer;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 1.5rem;
-}
-
-.empty-state-icon {
-    color: #C4B8A8;
-}
-
-.empty-state-text {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.2rem;
-    font-weight: 300;
-    color: #9AA5BB;
-    letter-spacing: 1px;
-}
-
-/* ─── Floating Add Button (FAB) ───────────────────────────────────────────── */
-
-.add-guest-fab {
-    position: fixed;
-    bottom: 2.5rem;
-    right: 2.5rem;
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #2E3B5D 0%, #4A5A7A 100%);
-    color: white;
-    border: none;
-    font-size: 2rem;
-    font-weight: 300;
-    line-height: 1;
-    cursor: pointer;
-    box-shadow: 0 8px 25px rgba(46, 59, 93, 0.35);
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
-    display: flex;
-    align-items: center;
     justify-content: center;
-    z-index: 100;
+    gap: 0.75rem;
+    min-height: 160px;
+    transition: border-color 0.25s ease, background 0.25s ease, transform 0.25s ease;
+    font-family: 'Cormorant Garamond', serif;
+    text-align: center;
+    /* reset button defaults */
+    width: 100%;
+    padding: 2rem;
+    box-shadow: none;
 }
 
-.add-guest-fab:hover {
-    transform: scale(1.1) translateY(-2px);
-    box-shadow: 0 12px 35px rgba(46, 59, 93, 0.45);
+.guest-card-placeholder:hover {
+    border-color: #7888A8;
+    background: rgba(46, 59, 93, 0.03);
+    transform: translateY(-4px);
+    box-shadow: 0 10px 30px rgba(139, 115, 85, 0.1);
 }
 
-.add-guest-fab:active {
-    transform: scale(0.97);
+.guest-card-placeholder:active {
+    transform: translateY(-1px);
+}
+
+.placeholder-plus {
+    font-size: 2.2rem;
+    font-weight: 200;
+    color: #9AA5BB;
+    line-height: 1;
+    transition: color 0.25s ease;
+}
+
+.guest-card-placeholder:hover .placeholder-plus {
+    color: #2E3B5D;
+}
+
+.placeholder-label {
+    font-size: 0.95rem;
+    font-weight: 300;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #9AA5BB;
+    transition: color 0.25s ease;
+}
+
+.guest-card-placeholder:hover .placeholder-label {
+    color: #2E3B5D;
+}
+
+/* Center the placeholder when it's the only card */
+.guests-grid--empty {
+    display: flex;
+    justify-content: center;
+}
+
+.guests-grid--empty .guest-card-placeholder {
+    max-width: 320px;
+    min-height: 220px;
 }
 
 /* ─── Dashboard responsive ────────────────────────────────────────────────── */
 
 @media (max-width: 768px) {
     .rsvp-dashboard-page {
-        padding: 2rem 1rem 7rem;
+        padding: 2rem 1rem 4rem;
     }
 
     .dashboard-logo .rsvp-logo-img {
@@ -1471,19 +1482,11 @@ p, span, div, em {
     .guests-grid {
         grid-template-columns: 1fr;
     }
-
-    .add-guest-fab {
-        bottom: 1.5rem;
-        right: 1.5rem;
-        width: 54px;
-        height: 54px;
-        font-size: 1.75rem;
-    }
 }
 
 @media (max-width: 480px) {
     .rsvp-dashboard-page {
-        padding: 1.5rem 1rem 7rem;
+        padding: 1.5rem 1rem 3rem;
     }
 
     .guest-card {
