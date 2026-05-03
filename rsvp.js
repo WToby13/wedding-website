@@ -103,6 +103,7 @@ function renderDashboard() {
                         </div>` : ''}
                     </div>
                 ` : ''}
+                ${attending && !g.dinner ? `<div class="card-dinner-nudge">Select dinner</div>` : ''}
                 <button class="card-edit-btn" onclick="openEditForm(${i})">Edit</button>
             </div>
         `;

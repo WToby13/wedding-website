@@ -1396,6 +1396,20 @@ p, span, div, em {
     color: #5B6B8C;
 }
 
+.card-dinner-nudge {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: #3B6EA5;
+    background-color: rgba(59, 110, 165, 0.08);
+    border-radius: 6px;
+    padding: 0.4rem 0.75rem;
+    display: inline-block;
+    align-self: flex-start;
+}
+
 .card-edit-btn {
     align-self: flex-end;
     background: none;
