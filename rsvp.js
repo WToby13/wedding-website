@@ -144,7 +144,7 @@ function renderDashboard() {
     const placeholderCard = `
         <button class="guest-card guest-card-placeholder" onclick="openAddForm()" aria-label="Add guest">
             <span class="placeholder-plus">+</span>
-            <span class="placeholder-label">${isEmpty ? 'Add your first guest' : 'Add guest'}</span>
+            <span class="placeholder-label">${isEmpty ? 'Add your first guest' : 'Add invited partner or family'}</span>
         </button>
     `;
 
