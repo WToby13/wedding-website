@@ -1,5 +1,5 @@
 // Google Apps Script web app URL (shared with the RSVP backend)
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzgc9KXhNbx8Hwm3aZwukMmgbJsGIdPVTb-l0Bc3mPnMNBTw-KdQqmJeUPmNxtasVvMOw/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxFFDWWzp2ryFCGL6D6TyKVXIRTkHUqZkLiEGaSgGtbkq0RHIvnEGAN5ziOM0wuZOmO6g/exec';
 
 const POLL_INTERVAL_MS = 30000;
 const STAR_KEY = 'tennisStarred';

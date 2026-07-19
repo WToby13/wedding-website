@@ -22,7 +22,7 @@
  *   2. Click Deploy → New deployment → Web app
  *   3. Execute as: Me | Who has access: Anyone
  *   4. Copy the web app URL and update SCRIPT_URL in rsvp.js
- *      Current URL: https://script.google.com/macros/s/AKfycbzgc9KXhNbx8Hwm3aZwukMmgbJsGIdPVTb-l0Bc3mPnMNBTw-KdQqmJeUPmNxtasVvMOw/exec
+ *      Current URL: https://script.google.com/macros/s/AKfycbxFFDWWzp2ryFCGL6D6TyKVXIRTkHUqZkLiEGaSgGtbkq0RHIvnEGAN5ziOM0wuZOmO6g/exec
  *   5. Every time you change this script, create a NEW deployment version.
  */
 
