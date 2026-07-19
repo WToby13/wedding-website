@@ -1628,6 +1628,12 @@ p, span, div, em {
     text-underline-offset: 3px;
 }
 
+.tennis-intro-note {
+    margin-top: -0.5rem;
+    font-size: 1rem;
+    color: #9AA5BB;
+}
+
 .tennis-meta {
     display: flex;
     align-items: center;
