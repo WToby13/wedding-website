@@ -1634,6 +1634,17 @@ p, span, div, em {
     color: #9AA5BB;
 }
 
+/* "Love" rendered in the same cursive as the title, inside the uppercase subtitle */
+.script-love {
+    font-family: 'Alex Brush', cursive;
+    text-transform: none;
+    font-size: 1.9em;
+    font-weight: 400;
+    letter-spacing: 1px;
+    color: #2E3B5D;
+    vertical-align: -0.15em;
+}
+
 .tennis-meta {
     display: flex;
     align-items: center;
