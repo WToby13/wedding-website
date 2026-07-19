@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tennis Tournament – Andrea & Tobias Wedding</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Playfair+Display:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Alex+Brush&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="tennis-page">
+        <div class="tennis-container">
+
+            <!-- Header -->
+            <header class="tennis-header">
+                <div class="rsvp-logo">
+                    <img src="/new-wedding-logo.png" alt="Andrea & Tobias" class="rsvp-logo-img">
+                </div>
+                <h1 class="tennis-title">Tennis Tournament</h1>
+                <p class="tennis-subtitle">Saturday, September 12 · Barbossi Tennis Club</p>
+                <p class="tennis-intro">A casual doubles round-robin. Tap the star next to any team to follow it, then switch to <em>Starred</em> to focus on just those teams.</p>
+                <div class="tennis-meta">
+                    <span id="tennis-updated" class="tennis-updated"></span>
+                    <button id="tennis-refresh" class="tennis-refresh-btn" type="button">Refresh</button>
+                </div>
+            </header>
+
+            <!-- Focus / filter bar -->
+            <div id="focus-bar" class="focus-bar"></div>
+
+            <!-- Standings -->
+            <section class="tennis-section">
+                <h2 class="tennis-section-title">Standings</h2>
+                <div id="standings-container"></div>
+            </section>
+
+            <!-- Schedule & Results -->
+            <section class="tennis-section">
+                <h2 class="tennis-section-title">Scores &amp; Schedule</h2>
+                <div id="schedule-container"></div>
+            </section>
+
+            <!-- Teams -->
+            <section class="tennis-section">
+                <h2 class="tennis-section-title">Teams</h2>
+                <div id="teams-container"></div>
+            </section>
+
+            <div class="tennis-footer-link">
+                <a href="/">← Back to the wedding site</a>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="/tennis.js"></script>
+</body>
+</html>

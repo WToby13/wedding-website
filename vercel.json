@@ -1,6 +1,14 @@
 {
   "rewrites": [
     {
+      "source": "/tennis/admin",
+      "destination": "/tennis-admin.html"
+    },
+    {
+      "source": "/tennis",
+      "destination": "/tennis.html"
+    },
+    {
       "source": "/rsvp/:path*",
       "destination": "/rsvp.html"
     }

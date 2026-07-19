@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tennis Admin – Andrea & Tobias Wedding</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Playfair+Display:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Alex+Brush&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="tennis-page">
+        <div class="tennis-container tennis-admin">
+
+            <header class="tennis-header">
+                <div class="rsvp-logo">
+                    <img src="/new-wedding-logo.png" alt="Andrea & Tobias" class="rsvp-logo-img">
+                </div>
+                <h1 class="tennis-title">Score Entry</h1>
+                <p class="tennis-intro">Enter each game's score as it finishes, then press Save. Scores and standings update live on the <a href="/tennis">tennis page</a>.</p>
+                <div class="tennis-meta">
+                    <span id="tennis-updated" class="tennis-updated"></span>
+                    <button id="tennis-refresh" class="tennis-refresh-btn" type="button">Reload</button>
+                </div>
+            </header>
+
+            <!-- Scores (primary) -->
+            <section class="tennis-section">
+                <h2 class="tennis-section-title">Matches</h2>
+                <div id="admin-matches"></div>
+            </section>
+
+            <!-- Schedule management (secondary) -->
+            <section class="tennis-section">
+                <details class="admin-advanced">
+                    <summary class="admin-advanced-summary">Add or adjust the schedule</summary>
+                    <p class="admin-advanced-note">
+                        The schedule is normally set up in the Google Sheet ahead of time.
+                        Use this only for last-minute changes on the day.
+                    </p>
+                    <div class="admin-form-card">
+                        <form id="add-match-form" class="admin-match-form">
+                            <div class="admin-field admin-field-sm">
+                                <label>Round</label>
+                                <input type="text" id="add-round" inputmode="numeric" placeholder="1">
+                            </div>
+                            <div class="admin-field">
+                                <label>Time</label>
+                                <input type="text" id="add-time" placeholder="9:30-9:45">
+                            </div>
+                            <div class="admin-field admin-field-sm">
+                                <label>Court</label>
+                                <input type="text" id="add-court" placeholder="1">
+                            </div>
+                            <div class="admin-field">
+                                <label>Team A</label>
+                                <select id="add-teamA"></select>
+                            </div>
+                            <div class="admin-field">
+                                <label>Team B</label>
+                                <select id="add-teamB"></select>
+                            </div>
+                            <div class="admin-field">
+                                <label>Note (optional)</label>
+                                <input type="text" id="add-note" placeholder="e.g. Final">
+                            </div>
+                            <div class="admin-field admin-field-action">
+                                <button type="submit" class="rsvp-submit-btn admin-add-btn">Add match</button>
+                            </div>
+                        </form>
+                    </div>
+                </details>
+            </section>
+
+            <div class="tennis-footer-link">
+                <a href="/tennis">← View public tennis page</a>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="/tennis-admin.js"></script>
+</body>
+</html>
