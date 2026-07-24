@@ -288,11 +288,12 @@ function renderSchedule() {
             `;
         }).join('');
 
+        const finalBadge = isFinal ? ' <span class="final-badge">Final</span>' : '';
         return `
             <div class="round-card ${isFinal ? 'round-final' : ''}">
                 <div class="round-header">
-                    <h3 class="round-title">${roundTitle}${isFinal ? ' <span class="final-badge">Final</span>' : ''}</h3>
-                    ${time ? `<span class="round-time">${escapeHtml(time)}</span>` : ''}
+                    <span class="round-time">${time ? escapeHtml(time) : roundTitle}${finalBadge}</span>
+                    ${time ? `<span class="round-label">${roundTitle}</span>` : ''}
                 </div>
                 <div class="round-matches">${matchRows}</div>
             </div>
