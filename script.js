@@ -199,4 +199,37 @@ document.addEventListener('DOMContentLoaded', function() {
             ticking = true;
         }
     });
+
+    // Bank Details dropdown
+    const bankToggleWrap = document.querySelector('[data-bank-toggle]');
+    if (bankToggleWrap) {
+        const toggleBtn = bankToggleWrap.querySelector('.bank-details-toggle');
+        toggleBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isOpen = bankToggleWrap.classList.toggle('open');
+            toggleBtn.setAttribute('aria-expanded', isOpen);
+        });
+    }
+
+    // Copy-to-clipboard for bank account numbers
+    document.querySelectorAll('.bank-copy').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+            e.stopPropagation();
+            const value = btn.getAttribute('data-copy');
+            try {
+                await navigator.clipboard.writeText(value);
+            } catch (err) {
+                const ta = document.createElement('textarea');
+                ta.value = value;
+                ta.style.position = 'fixed';
+                ta.style.opacity = '0';
+                document.body.appendChild(ta);
+                ta.select();
+                try { document.execCommand('copy'); } catch (_) {}
+                document.body.removeChild(ta);
+            }
+            btn.classList.add('copied');
+            setTimeout(() => btn.classList.remove('copied'), 1500);
+        });
+    });
 });

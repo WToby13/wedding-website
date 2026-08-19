@@ -664,6 +664,121 @@ p, span, div, em {
     margin-top: 0.85rem;
 }
 
+/* Bank Details dropdown */
+.bank-details {
+    margin-top: 1rem;
+    border: 1px solid rgba(46, 59, 93, 0.2);
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.bank-details-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 1rem 1.25rem;
+    background: rgba(120, 136, 168, 0.06);
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 1.05rem;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    color: #2E3B5D;
+    text-transform: uppercase;
+    transition: background 0.3s ease;
+}
+
+.bank-details-toggle:hover {
+    background: rgba(120, 136, 168, 0.12);
+}
+
+.bank-details-arrow {
+    font-size: 1.4rem;
+    line-height: 1;
+    color: #7888A8;
+    transition: transform 0.3s ease;
+}
+
+.bank-details.open .bank-details-arrow {
+    transform: rotate(90deg);
+}
+
+.bank-details-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease;
+}
+
+.bank-details.open .bank-details-content {
+    max-height: 400px;
+}
+
+.bank-account {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    padding: 1rem 1.25rem;
+    border-top: 1px solid rgba(46, 59, 93, 0.12);
+}
+
+.bank-account-label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: #7888A8;
+}
+
+.bank-copy {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 1.1rem;
+    font-weight: 400;
+    color: #2E3B5D;
+    transition: color 0.3s ease;
+    align-self: flex-start;
+}
+
+.bank-copy:hover {
+    color: #4A5A7A;
+}
+
+.bank-copy-value {
+    letter-spacing: 0.3px;
+}
+
+.bank-copy-icon {
+    flex-shrink: 0;
+    opacity: 0.55;
+    transition: opacity 0.3s ease;
+}
+
+.bank-copy:hover .bank-copy-icon {
+    opacity: 1;
+}
+
+.bank-copy.copied {
+    color: #3d7a5a;
+}
+
+.bank-copy.copied .bank-copy-value::after {
+    content: ' — Copied!';
+    font-size: 0.85rem;
+    color: #3d7a5a;
+}
+
+.bank-copy.copied .bank-copy-icon {
+    display: none;
+}
+
 /* RSVP Section */
 .rsvp-section {
     text-align: center;
