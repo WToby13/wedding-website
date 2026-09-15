@@ -10,8 +10,13 @@ const DRIVE_DOWNLOAD_URL = 'https://drive.google.com/uc?export=download&id=';
 const CODE_KEY = 'photosCode';
 const NAME_KEY = 'photosName';
 const DEVICE_KEY = 'photosDevice';
+const LIST_KEY = 'photosList';
+
+// Checked here so the page unlocks instantly; the script checks it again on every request.
+const PASSCODE = 'andrea';
 
 const POLL_INTERVAL_MS = 60000;
+const LIST_TIMEOUT_MS = 25000; // uploads get no timeout: big chunks on slow phones take a while
 const MAX_VIDEO_SECONDS = 180;
 const MAX_VIDEO_LABEL = '3 minutes';
 const MAX_IMAGE_BYTES = 100 * 1024 * 1024;
@@ -147,16 +152,21 @@ class ApiError extends Error {
 }
 
 // Apps Script sometimes fails to hand back a response (a "page not found" on
-// its redirect), so retry a few times. Every action is safe to repeat.
-async function fetchJson(url, options) {
+// its redirect) or hangs while it starts up, so retry a few times. Every action
+// is safe to repeat. `timeoutMs` abandons a slow attempt and tries again.
+async function fetchJson(url, options = {}, timeoutMs = 0) {
     for (let attempt = 1; ; attempt++) {
+        const controller = timeoutMs ? new AbortController() : null;
+        const timer = controller ? setTimeout(() => controller.abort(), timeoutMs) : null;
         try {
-            const res = await fetch(url, options);
+            const res = await fetch(url, controller ? { ...options, signal: controller.signal } : options);
             if (res.ok) return await res.json();
             throw new Error(`http_${res.status}`);
         } catch (err) {
             if (attempt >= 5) throw err;
-            await sleep(1000 * 2 ** (attempt - 1));
+            await sleep(500 * 2 ** (attempt - 1));
+        } finally {
+            clearTimeout(timer);
         }
     }
 }
@@ -164,7 +174,7 @@ async function fetchJson(url, options) {
 async function apiList() {
     const device = await getDevice();
     const params = new URLSearchParams({ action: 'photosList', code: state.code, device: device.hash });
-    return fetchJson(`${SCRIPT_URL}?${params}`);
+    return fetchJson(`${SCRIPT_URL}?${params}`, {}, LIST_TIMEOUT_MS);
 }
 
 // Sent as text/plain so the browser skips the CORS preflight Apps Script can't answer.
@@ -204,35 +214,43 @@ function showApp() {
     $('photos-app').classList.remove('hidden');
 }
 
-async function unlock(code, fromStorage) {
-    const button = $('gate-submit');
+function passcodeMatches(code) {
+    return String(code || '').trim().toLowerCase() === PASSCODE;
+}
+
+function unlock(code) {
+    if (!passcodeMatches(code)) {
+        setGateError("That's not quite right – please try again.");
+        return;
+    }
     state.code = code.trim();
-    button.disabled = true;
-    button.textContent = 'Opening…';
+    storageSet(CODE_KEY, state.code);
+    openGallery();
+}
+
+// Show the gallery straight away — from this device's last copy of the list if
+// there is one — then fetch the latest from the script in the background.
+async function openGallery() {
+    showApp();
+    const cached = loadCachedList();
+    if (cached) {
+        applyList(cached);
+        if (state.photos.has(hashPhotoId())) openFromHash();
+    } else {
+        renderSkeleton();
+    }
+    await refresh();
+    if (!state.code) return; // the script rejected the passcode
+    startPolling();
+    openFromHash();
+}
+
+function loadCachedList() {
     try {
-        const data = await apiList();
-        if (data.error === 'bad_code') {
-            showGate(fromStorage ? '' : "That's not quite right – please try again.");
-            return;
-        }
-        if (!Array.isArray(data.photos)) {
-            showGate('Photo sharing is almost ready – please check back soon.');
-            return;
-        }
-        storageSet(CODE_KEY, state.code);
-        showApp();
-        applyList(data.photos);
-        startPolling();
-        openFromHash();
+        const list = JSON.parse(storageGet(LIST_KEY) || 'null');
+        return Array.isArray(list) ? list : null;
     } catch (_err) {
-        if (fromStorage) {
-            renderStatus("Couldn't load the photos. Please check your connection and press Refresh.");
-        } else {
-            setGateError("Couldn't connect. Please check your connection and try again.");
-        }
-    } finally {
-        button.disabled = false;
-        button.textContent = 'View photos';
+        return null;
     }
 }
 
@@ -248,9 +266,16 @@ async function refresh() {
             showGate('Please enter the passcode again.');
             return;
         }
-        if (Array.isArray(data.photos)) applyList(data.photos);
+        if (!Array.isArray(data.photos)) throw new Error(data.error || 'no_photos');
+        applyList(data.photos);
+        storageSet(LIST_KEY, JSON.stringify(data.photos));
+        $('photos-updated').textContent =
+            `Updated ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
     } catch (_err) {
-        if (!state.photos.size) renderStatus("Couldn't load the photos. Please check your connection and press Refresh.");
+        if (!state.photos.size) {
+            $('gallery').querySelector('.gallery-skeleton')?.remove();
+            renderStatus("Couldn't load the photos right now. Please press Refresh to try again.");
+        }
     } finally {
         button.disabled = false;
     }
@@ -285,8 +310,6 @@ function applyList(list) {
 
     state.photos = next;
     renderGallery();
-    $('photos-updated').textContent =
-        `Updated ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
 }
 
 function addPhoto(photo) {
@@ -1221,7 +1244,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
         setGateError('');
-        unlock(code, false);
+        unlock(code);
     });
 
     const nameInput = $('photos-name');
@@ -1249,10 +1272,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     const saved = storageGet(CODE_KEY);
-    if (saved) {
-        showApp();
-        renderSkeleton();
-        unlock(saved, true);
+    if (passcodeMatches(saved)) {
+        state.code = saved.trim();
+        openGallery();
     } else {
         showGate('');
     }
