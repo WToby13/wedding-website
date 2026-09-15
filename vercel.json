@@ -5,6 +5,10 @@
       "destination": "/tennis-admin.html"
     },
     {
+      "source": "/photos",
+      "destination": "/photos.html"
+    },
+    {
       "source": "/tennis",
       "destination": "/tennis.html"
     },

@@ -5,6 +5,10 @@
  * RSVP:   doGet(action=getByEmail), doPost(action=create|update)
  * Tennis: doGet(action=getTennis), doPost(action=saveMatch|deleteMatch)
  *         (see the "Tennis tournament" section below for the two tabs used)
+ * Photos: doGet(action=photosList), doPost(action=photosStart|photosChunk|
+ *         photosDone|photosDelete) — see the "Photos" section below.
+ *         After pasting, run authorizePhotos() once in the editor so the
+ *         script gets Google Drive access.
  *
  * Sheet columns (in order):
  *   1. Guest Name
@@ -101,6 +105,10 @@ function doGet(e) {
             return jsonResponse(getTennisData());
         }
 
+        if (action === 'photosList') {
+            return jsonResponse(photosList(e.parameter));
+        }
+
         if (action === 'getByEmail') {
             const email = (e.parameter.email || '').trim().toLowerCase();
             if (!email) {
@@ -146,6 +154,12 @@ function doGet(e) {
 function doPost(e) {
     try {
         const data = JSON.parse(e.postData.contents);
+
+        // Photo actions must be routed before the RSVP fallthrough below,
+        // which treats any unknown action as a new RSVP row.
+        if (PHOTO_ACTIONS[data.action]) {
+            return jsonResponse(PHOTO_ACTIONS[data.action](data));
+        }
 
         if (data.action === 'saveMatch') {
             return jsonResponse(saveMatch(data));
@@ -496,6 +510,341 @@ function deleteMatch(data) {
     return { success: true };
 }
 
+// ─── Photos ───────────────────────────────────────────────────────────────────
+//
+// Powers /photos. Files live in a Google Drive folder. Uploads use a Drive
+// resumable-upload session started here (photosStart): the browser PUTs the
+// bytes straight to Drive, and if it can't reach Drive directly it relays
+// base64 chunks through this script instead (photosChunk).
+//
+// Per-file details are stored as Drive appProperties:
+//   takenAt   ISO capture time read from the photo/video metadata in the browser
+//   uploader  optional guest name (also written to the file description)
+//   duration  video length in ms
+//   owner     hash of the uploading device's key — lets that device delete it
+//   fp        content fingerprint, used to skip duplicate uploads
+// Files added to the folder by hand work too; they fall back to Drive's own
+// photo metadata for the capture time. Deleting moves a file to the Drive trash.
+
+const PHOTOS_FOLDER_ID = '180We-RSYneDPXHaiHjNnCHgn5lHmcjL0';
+const PHOTOS_PASSCODE = 'andrea'; // compared case-insensitively
+const PHOTOS_MAX_IMAGE_BYTES = 100 * 1024 * 1024;
+const PHOTOS_MAX_VIDEO_BYTES = 2 * 1024 * 1024 * 1024;
+const PHOTOS_MAX_VIDEO_MS = 91000; // "up to 90 seconds", with a little slack
+const PHOTOS_CACHE_KEY = 'photos';
+const PHOTOS_CACHE_SECONDS = 60;
+const PHOTOS_TZ = 'Europe/Paris';
+const PHOTOS_TZ_OFFSET = '+02:00'; // France in September; used for timestamps with no zone
+const DRIVE_FILES_API = 'https://www.googleapis.com/drive/v3/files';
+const DRIVE_UPLOAD_API = 'https://www.googleapis.com/upload/drive/v3/files';
+const PHOTO_FIELDS = 'id,name,mimeType,createdTime,appProperties,imageMediaMetadata(time),videoMediaMetadata(durationMillis)';
+// Pages allowed to upload straight to Drive (others fall back to relaying).
+const PHOTOS_ORIGIN_RE = /^(https:\/\/([a-z0-9-]+\.)*(olsenkeating\.com|vercel\.app)|http:\/\/(localhost|127\.0\.0\.1)(:\d+)?)$/;
+
+const PHOTO_ACTIONS = {
+    photosStart: photosStart,
+    photosChunk: photosChunk,
+    photosDone: photosDone,
+    photosDelete: photosDelete,
+};
+
+// Run once from the Apps Script editor (select it → Run) to grant Drive access.
+function authorizePhotos() {
+    Logger.log('Photos folder: ' + DriveApp.getFolderById(PHOTOS_FOLDER_ID).getName());
+}
+
+function photosList(params) {
+    if (!photosAuthorized(params.code)) return { error: 'bad_code' };
+    const deviceHash = String(params.device || '');
+    const photos = listPhotoFiles().map(item => publicPhoto(item, deviceHash));
+    return { photos: photos, updated: new Date().toISOString() };
+}
+
+// Validate the upload, skip duplicates, and open a Drive resumable session.
+function photosStart(data) {
+    if (!photosAuthorized(data.code)) return { error: 'bad_code' };
+
+    const mime = String(data.mimeType || '').toLowerCase();
+    const size = Number(data.size);
+    const isVideo = mime.indexOf('video/') === 0;
+    if (!isVideo && mime.indexOf('image/') !== 0) return { error: 'unsupported_type' };
+    if (!(size > 0) || size > (isVideo ? PHOTOS_MAX_VIDEO_BYTES : PHOTOS_MAX_IMAGE_BYTES)) {
+        return { error: 'too_large' };
+    }
+    const duration = Number(data.duration) || 0;
+    if (isVideo && duration > PHOTOS_MAX_VIDEO_MS) return { error: 'too_long' };
+
+    const owner = hashDeviceKey(data.deviceKey);
+    const fp = String(data.fingerprint || '').replace(/[^a-f0-9]/g, '').slice(0, 32);
+    if (fp) {
+        const existing = findPhotoByFingerprint(fp);
+        if (existing) return { duplicate: true, photo: publicPhoto(existing, owner) };
+    }
+
+    const takenMs = parsePhotoTime(data.takenAt);
+    const uploader = truncateBytes(String(data.uploader || '').trim(), 100);
+    const appProperties = { src: 'site' };
+    if (owner) appProperties.owner = owner;
+    if (takenMs) appProperties.takenAt = new Date(takenMs).toISOString();
+    if (uploader) appProperties.uploader = uploader;
+    if (fp) appProperties.fp = fp;
+    if (isVideo && duration > 0) appProperties.duration = String(Math.round(duration));
+
+    const metadata = {
+        name: photoFileName(data.name, takenMs),
+        parents: [PHOTOS_FOLDER_ID],
+        appProperties: appProperties,
+    };
+    if (uploader) metadata.description = 'Shared by ' + uploader;
+
+    const headers = { 'X-Upload-Content-Type': mime, 'X-Upload-Content-Length': String(size) };
+    // Drive only returns CORS headers on the session if it was opened with the page's Origin.
+    const origin = String(data.origin || '');
+    if (PHOTOS_ORIGIN_RE.test(origin)) headers.Origin = origin;
+
+    const url = DRIVE_UPLOAD_API + '?uploadType=resumable&fields=' + encodeURIComponent(PHOTO_FIELDS);
+    const options = {
+        method: 'post',
+        contentType: 'application/json; charset=UTF-8',
+        payload: JSON.stringify(metadata),
+        headers: headers,
+    };
+    let res;
+    try {
+        res = driveRequest(url, options);
+    } catch (err) {
+        if (!headers.Origin) throw err;
+        delete headers.Origin; // the browser will relay chunks instead
+        res = driveRequest(url, options);
+    }
+
+    const uploadUrl = headerValue(res, 'Location');
+    if (res.getResponseCode() !== 200 || !uploadUrl) {
+        throw new Error('Could not start upload (' + res.getResponseCode() + '): ' + res.getContentText().slice(0, 300));
+    }
+    return { uploadUrl: uploadUrl, direct: !!headers.Origin };
+}
+
+// Relay one chunk (or, with no data, ask how much Drive has received so far).
+function photosChunk(data) {
+    if (!photosAuthorized(data.code)) return { error: 'bad_code' };
+    const uploadUrl = String(data.uploadUrl || '');
+    if (uploadUrl.indexOf(DRIVE_UPLOAD_API + '?') !== 0) return { error: 'bad_upload_url' };
+
+    const total = Number(data.total);
+    const start = Number(data.start) || 0;
+    const bytes = data.b64 ? Utilities.base64Decode(data.b64) : [];
+    const options = {
+        method: 'put',
+        headers: {
+            'Content-Range': bytes.length
+                ? 'bytes ' + start + '-' + (start + bytes.length - 1) + '/' + total
+                : 'bytes */' + total,
+        },
+        payload: bytes.length ? bytes : '',
+        contentType: 'application/octet-stream',
+        muteHttpExceptions: true,
+        followRedirects: false,
+    };
+    const res = UrlFetchApp.fetch(uploadUrl, options);
+    const code = res.getResponseCode();
+
+    if (code === 200 || code === 201) {
+        return { done: true, fileId: JSON.parse(res.getContentText()).id };
+    }
+    if (code === 308) {
+        const m = headerValue(res, 'Range').match(/bytes=0-(\d+)/);
+        return { done: false, next: m ? Number(m[1]) + 1 : 0 };
+    }
+    return { error: 'upload_failed', status: code, detail: res.getContentText().slice(0, 300) };
+}
+
+// Called after an upload finishes: refresh the cached list and return the new item.
+function photosDone(data) {
+    if (!photosAuthorized(data.code)) return { error: 'bad_code' };
+    CacheService.getScriptCache().remove(PHOTOS_CACHE_KEY);
+    const fileId = cleanFileId(data.fileId);
+    if (!fileId) return { error: 'not_found' };
+    const file = driveJson(DRIVE_FILES_API + '/' + fileId + '?fields=' + encodeURIComponent(PHOTO_FIELDS + ',parents'));
+    if ((file.parents || []).indexOf(PHOTOS_FOLDER_ID) === -1) return { error: 'not_found' };
+    return { photo: publicPhoto(toPhotoItem(file), hashDeviceKey(data.deviceKey)) };
+}
+
+// Guests can delete what they uploaded from the same device (moved to Drive trash).
+function photosDelete(data) {
+    if (!photosAuthorized(data.code)) return { error: 'bad_code' };
+    const fileId = cleanFileId(data.fileId);
+    const owner = hashDeviceKey(data.deviceKey);
+    if (!fileId || !owner) return { error: 'not_allowed' };
+
+    const file = driveJson(DRIVE_FILES_API + '/' + fileId + '?fields=parents,appProperties');
+    const isOwner = (file.appProperties || {}).owner === owner;
+    if ((file.parents || []).indexOf(PHOTOS_FOLDER_ID) === -1 || !isOwner) return { error: 'not_allowed' };
+
+    driveJson(DRIVE_FILES_API + '/' + fileId, {
+        method: 'patch',
+        contentType: 'application/json',
+        payload: JSON.stringify({ trashed: true }),
+    });
+    CacheService.getScriptCache().remove(PHOTOS_CACHE_KEY);
+    return { success: true };
+}
+
+// ─── Photo helpers ─────────────────────────────────────────────────────────────
+
+function photosAuthorized(code) {
+    return String(code || '').trim().toLowerCase() === PHOTOS_PASSCODE;
+}
+
+function listPhotoFiles() {
+    const cache = CacheService.getScriptCache();
+    const cached = cacheGetJson(cache, PHOTOS_CACHE_KEY);
+    if (cached) return cached;
+
+    const q = "'" + PHOTOS_FOLDER_ID + "' in parents and trashed = false and " +
+              "(mimeType contains 'image/' or mimeType contains 'video/')";
+    const items = [];
+    let pageToken = '';
+    do {
+        const url = DRIVE_FILES_API + '?pageSize=1000&q=' + encodeURIComponent(q) +
+            '&fields=' + encodeURIComponent('nextPageToken,files(' + PHOTO_FIELDS + ')') +
+            (pageToken ? '&pageToken=' + encodeURIComponent(pageToken) : '');
+        const data = driveJson(url);
+        (data.files || []).forEach(f => items.push(toPhotoItem(f)));
+        pageToken = data.nextPageToken || '';
+    } while (pageToken);
+
+    cachePutJson(cache, PHOTOS_CACHE_KEY, items, PHOTOS_CACHE_SECONDS);
+    return items;
+}
+
+function findPhotoByFingerprint(fp) {
+    const q = "'" + PHOTOS_FOLDER_ID + "' in parents and trashed = false and " +
+              "appProperties has { key='fp' and value='" + fp + "' }";
+    const data = driveJson(DRIVE_FILES_API + '?pageSize=1&q=' + encodeURIComponent(q) +
+        '&fields=' + encodeURIComponent('files(' + PHOTO_FIELDS + ')'));
+    return (data.files && data.files.length) ? toPhotoItem(data.files[0]) : null;
+}
+
+function toPhotoItem(file) {
+    const props = file.appProperties || {};
+    const video = file.videoMediaMetadata || {};
+    const duration = Number(video.durationMillis) || Number(props.duration) || null;
+    return {
+        id: file.id,
+        name: file.name,
+        type: String(file.mimeType).indexOf('video/') === 0 ? 'video' : 'image',
+        takenAt: parsePhotoTime(props.takenAt) || parsePhotoTime((file.imageMediaMetadata || {}).time),
+        uploadedAt: Date.parse(file.createdTime) || null,
+        uploader: props.uploader || '',
+        duration: duration,
+        owner: props.owner || '',
+    };
+}
+
+// Strip the owner hash and flag whether the requesting device uploaded it.
+function publicPhoto(item, deviceHash) {
+    const out = Object.assign({}, item, { mine: !!deviceHash && item.owner === deviceHash });
+    delete out.owner;
+    return out;
+}
+
+// EXIF "2026:09:12 17:31:02" or ISO 8601 → epoch ms (null if missing/invalid).
+function parsePhotoTime(raw) {
+    let s = String(raw || '').trim();
+    if (!s) return null;
+    const exif = s.match(/^(\d{4}):(\d{2}):(\d{2})[ T](\d{2}):(\d{2}):(\d{2})/);
+    if (exif) s = exif[1] + '-' + exif[2] + '-' + exif[3] + 'T' + exif[4] + ':' + exif[5] + ':' + exif[6];
+    s = s.replace(/([+-]\d{2})(\d{2})$/, '$1:$2');
+    if (!/(Z|[+-]\d{2}:\d{2})$/.test(s)) s += PHOTOS_TZ_OFFSET;
+    const t = Date.parse(s);
+    if (isNaN(t) || new Date(t).getUTCFullYear() < 2000) return null;
+    return t;
+}
+
+// Prefix the capture time so the Drive folder sorts chronologically too.
+function photoFileName(name, takenMs) {
+    const base = String(name || 'photo').replace(/[\\/ -]/g, '_').slice(0, 120) || 'photo';
+    return takenMs
+        ? Utilities.formatDate(new Date(takenMs), PHOTOS_TZ, 'yyyy-MM-dd HH.mm.ss') + ' - ' + base
+        : base;
+}
+
+function hashDeviceKey(key) {
+    const k = String(key || '');
+    if (k.length < 16) return '';
+    return Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, k, Utilities.Charset.UTF_8)
+        .map(b => ((b + 256) % 256).toString(16).padStart(2, '0'))
+        .join('')
+        .slice(0, 32);
+}
+
+function cleanFileId(id) {
+    return String(id || '').replace(/[^\w-]/g, '');
+}
+
+// appProperties are limited to 124 bytes per key + value.
+function truncateBytes(str, maxBytes) {
+    const chars = Array.from(str.slice(0, maxBytes));
+    while (chars.length && Utilities.newBlob(chars.join('')).getBytes().length > maxBytes) chars.pop();
+    return chars.join('');
+}
+
+function driveRequest(url, options) {
+    const opts = Object.assign({ muteHttpExceptions: true }, options || {});
+    opts.headers = Object.assign({ Authorization: 'Bearer ' + ScriptApp.getOAuthToken() }, opts.headers || {});
+    return UrlFetchApp.fetch(url, opts);
+}
+
+function driveJson(url, options) {
+    const res = driveRequest(url, options);
+    const code = res.getResponseCode();
+    if (code < 200 || code >= 300) {
+        throw new Error('Drive ' + code + ': ' + res.getContentText().slice(0, 300));
+    }
+    const text = res.getContentText();
+    return text ? JSON.parse(text) : {};
+}
+
+function headerValue(res, name) {
+    const headers = res.getAllHeaders();
+    const key = Object.keys(headers).find(k => k.toLowerCase() === name.toLowerCase());
+    if (!key) return '';
+    const value = headers[key];
+    return Array.isArray(value) ? String(value[0]) : String(value);
+}
+
+// CacheService values max out at 100KB, so large lists are stored in parts.
+function cachePutJson(cache, key, value, seconds) {
+    const json = JSON.stringify(value);
+    const partSize = 40000;
+    const parts = {};
+    let count = 0;
+    for (let i = 0; i < json.length; i += partSize) {
+        parts[key + ':' + count++] = json.slice(i, i + partSize);
+    }
+    parts[key] = String(count);
+    try {
+        cache.putAll(parts, seconds);
+    } catch (_err) {
+        // Too big to cache — the list is simply served uncached.
+    }
+}
+
+function cacheGetJson(cache, key) {
+    const count = Number(cache.get(key));
+    if (!count) return null;
+    const keys = [];
+    for (let i = 0; i < count; i++) keys.push(key + ':' + i);
+    const parts = cache.getAll(keys);
+    if (keys.some(k => parts[k] == null)) return null;
+    try {
+        return JSON.parse(keys.map(k => parts[k]).join(''));
+    } catch (_err) {
+        return null;
+    }
+}
+
 // ─── Local test helpers (run manually in the Apps Script editor) ──────────────
 
 function testGetByEmail() {
@@ -570,4 +919,9 @@ function testDeleteMatch() {
         postData: { contents: JSON.stringify({ action: 'deleteMatch', matchId: 'm_test01' }) },
     };
     Logger.log(doPost(mockEvent).getContent());
+}
+
+function testPhotosList() {
+    const mockEvent = { parameter: { action: 'photosList', code: 'Andrea' } };
+    Logger.log(doGet(mockEvent).getContent());
 }

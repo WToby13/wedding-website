@@ -139,23 +139,6 @@ document.addEventListener('DOMContentLoaded', function() {
         observer.observe(folder, { attributes: true, attributeFilter: ['class'] });
     });
     
-    // Add loading state to RSVP button
-    const rsvpButton = document.querySelector('.rsvp-button');
-    if (rsvpButton) {
-        rsvpButton.addEventListener('click', function(e) {
-            // Add a subtle loading state
-            const originalText = this.textContent;
-            this.textContent = 'Opening email...';
-            this.style.opacity = '0.7';
-            
-            // Reset after a short delay
-            setTimeout(() => {
-                this.textContent = originalText;
-                this.style.opacity = '1';
-            }, 1000);
-        });
-    }
-    
     // Smooth fade-in for hero elements (removed typing animation for cleaner aesthetic)
     
     // Add subtle hover effects to folder icons
