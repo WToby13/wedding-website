@@ -155,7 +155,7 @@ async function fetchJson(url, options) {
             if (res.ok) return await res.json();
             throw new Error(`http_${res.status}`);
         } catch (err) {
-            if (attempt >= 4) throw err;
+            if (attempt >= 5) throw err;
             await sleep(1000 * 2 ** (attempt - 1));
         }
     }
