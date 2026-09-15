@@ -146,20 +146,33 @@ class ApiError extends Error {
     }
 }
 
+// Apps Script sometimes fails to hand back a response (a "page not found" on
+// its redirect), so retry a few times. Every action is safe to repeat.
+async function fetchJson(url, options) {
+    for (let attempt = 1; ; attempt++) {
+        try {
+            const res = await fetch(url, options);
+            if (res.ok) return await res.json();
+            throw new Error(`http_${res.status}`);
+        } catch (err) {
+            if (attempt >= 4) throw err;
+            await sleep(1000 * 2 ** (attempt - 1));
+        }
+    }
+}
+
 async function apiList() {
     const device = await getDevice();
     const params = new URLSearchParams({ action: 'photosList', code: state.code, device: device.hash });
-    const res = await fetch(`${SCRIPT_URL}?${params}`);
-    return res.json();
+    return fetchJson(`${SCRIPT_URL}?${params}`);
 }
 
 // Sent as text/plain so the browser skips the CORS preflight Apps Script can't answer.
 async function apiPost(action, payload) {
-    const res = await fetch(SCRIPT_URL, {
+    const data = await fetchJson(SCRIPT_URL, {
         method: 'POST',
         body: JSON.stringify({ action, code: state.code, ...payload }),
     });
-    const data = await res.json();
     if (data.error === 'bad_code') {
         showGate('Please enter the passcode again.');
         throw new ApiError('bad_code');
