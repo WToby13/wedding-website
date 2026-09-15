@@ -1,6 +1,6 @@
 # Photos Page Setup
 
-The `/photos` page lets guests upload photos and short videos (up to 90 seconds)
+The `/photos` page lets guests upload photos and short videos (up to 3 minutes)
 to the **Wedding weekend photos** Google Drive folder and browse them in a grid
 or a swipeable full-screen viewer. It uses the same Google Apps Script backend
 as the RSVP and tennis pages.
@@ -65,5 +65,5 @@ Until this is done, the page shows "Photo sharing is almost ready".
 
 ## Limits
 
-- Videos up to 90 seconds; photos up to 100 MB, videos up to 2 GB.
+- Videos up to 3 minutes; photos up to 100 MB, videos up to 2 GB.
 - Uploads count against the Drive storage of the account that owns the script.

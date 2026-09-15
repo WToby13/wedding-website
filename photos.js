@@ -12,7 +12,8 @@ const NAME_KEY = 'photosName';
 const DEVICE_KEY = 'photosDevice';
 
 const POLL_INTERVAL_MS = 60000;
-const MAX_VIDEO_SECONDS = 90;
+const MAX_VIDEO_SECONDS = 180;
+const MAX_VIDEO_LABEL = '3 minutes';
 const MAX_IMAGE_BYTES = 100 * 1024 * 1024;
 const MAX_VIDEO_BYTES = 2 * 1024 * 1024 * 1024;
 const PARALLEL_UPLOADS = 3;
@@ -866,7 +867,7 @@ const STATUS_TEXT = {
 
 const ERROR_TEXT = {
     too_large: 'This file is too large',
-    too_long: `Videos can be up to ${MAX_VIDEO_SECONDS} seconds`,
+    too_long: `Videos can be up to ${MAX_VIDEO_LABEL}`,
     unsupported_type: 'Only photos and videos can be shared',
     bad_code: 'Please enter the passcode again',
 };
@@ -916,7 +917,7 @@ async function uploadItem(item) {
         const info = await readMediaInfo(file, item.kind);
         if (item.kind === 'video' && info.duration > (MAX_VIDEO_SECONDS + 1) * 1000) {
             item.retryable = false;
-            throw new UploadError(`Videos can be up to ${MAX_VIDEO_SECONDS} seconds (this one is ${formatDuration(info.duration)})`);
+            throw new UploadError(`Videos can be up to ${MAX_VIDEO_LABEL} (this one is ${formatDuration(info.duration)})`);
         }
         const [fingerprint, device] = await Promise.all([fingerprintFile(file), getDevice()]);
 
