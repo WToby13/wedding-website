@@ -548,7 +548,8 @@ const PHOTO_ACTIONS = {
     photosDelete: photosDelete,
 };
 
-// Run once from the Apps Script editor (select it → Run) to grant Drive access.
+// Run from the Apps Script editor (select it → Run) to grant Drive access. Run it
+// again after pasting a new version if Google asks for new permissions.
 function authorizePhotos() {
     Logger.log('Photos folder: ' + DriveApp.getFolderById(PHOTOS_FOLDER_ID).getName());
 }
@@ -609,12 +610,16 @@ function photosStart(data) {
         payload: JSON.stringify(metadata),
         headers: headers,
     };
-    let res;
+    let res = null;
     try {
         res = driveRequest(url, options);
     } catch (err) {
         if (!headers.Origin) throw err;
-        delete headers.Origin; // the browser will relay chunks instead
+    }
+    // If Drive won't open the session with the page's Origin, open it without one;
+    // the browser will then relay chunks through this script instead.
+    if (headers.Origin && (!res || res.getResponseCode() !== 200)) {
+        delete headers.Origin;
         res = driveRequest(url, options);
     }
 
@@ -681,11 +686,9 @@ function photosDelete(data) {
     const isOwner = (file.appProperties || {}).owner === owner;
     if ((file.parents || []).indexOf(PHOTOS_FOLDER_ID) === -1 || !isOwner) return { error: 'not_allowed' };
 
-    driveJson(DRIVE_FILES_API + '/' + fileId, {
-        method: 'patch',
-        contentType: 'application/json',
-        payload: JSON.stringify({ trashed: true }),
-    });
+    // DriveApp (not the REST API) on purpose: using a DriveApp write method is what
+    // makes Apps Script request full Drive access, which uploads need.
+    DriveApp.getFileById(fileId).setTrashed(true);
     CacheService.getScriptCache().remove(PHOTOS_CACHE_KEY);
     return { success: true };
 }
