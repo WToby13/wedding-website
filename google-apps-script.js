@@ -552,6 +552,16 @@ const PHOTO_ACTIONS = {
 // again after pasting a new version if Google asks for new permissions.
 function authorizePhotos() {
     Logger.log('Photos folder: ' + DriveApp.getFolderById(PHOTOS_FOLDER_ID).getName());
+    // Open (and abandon) an upload session to confirm uploads are allowed. No file is created.
+    const res = driveRequest(DRIVE_UPLOAD_API + '?uploadType=resumable', {
+        method: 'post',
+        contentType: 'application/json; charset=UTF-8',
+        payload: JSON.stringify({ name: 'upload-check', parents: [PHOTOS_FOLDER_ID] }),
+        headers: { 'X-Upload-Content-Type': 'image/jpeg' },
+    });
+    Logger.log(res.getResponseCode() === 200
+        ? 'Uploads: OK'
+        : 'Uploads: NOT allowed (' + res.getResponseCode() + ') ' + res.getContentText().slice(0, 200));
 }
 
 function photosList(params) {

@@ -979,9 +979,14 @@ async function uploadItem(item) {
         setStatus(item, 'done');
     } catch (err) {
         if (['too_large', 'too_long', 'unsupported_type'].includes(err.code)) item.retryable = false;
-        const message = err instanceof UploadError
-            ? err.message
-            : (ERROR_TEXT[err.code] || 'Upload failed – check your connection and retry');
+        console.error('Upload failed:', file.name, err);
+        let message = err instanceof UploadError ? err.message : ERROR_TEXT[err.code];
+        if (!message) {
+            // An ApiError means the script answered with an error, so it isn't the guest's connection.
+            message = err instanceof ApiError
+                ? "Couldn't save this one right now – please retry in a moment"
+                : 'Upload failed – check your connection and retry';
+        }
         setStatus(item, 'error', message);
     }
 }
