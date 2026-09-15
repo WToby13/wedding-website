@@ -1,4 +1,9 @@
 {
+  "functions": {
+    "api/photos.js": {
+      "maxDuration": 60
+    }
+  },
   "rewrites": [
     {
       "source": "/tennis/admin",

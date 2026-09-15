@@ -3,6 +3,8 @@
 
 // Google Apps Script web app URL (shared with the RSVP + tennis backend)
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxFFDWWzp2ryFCGL6D6TyKVXIRTkHUqZkLiEGaSgGtbkq0RHIvnEGAN5ziOM0wuZOmO6g/exec';
+const LIST_API_URL = '/api/photos'; // edge-cached copy of the list (api/photos.js)
+const DRIVE_IMAGE_URL = 'https://lh3.googleusercontent.com/d/';
 const DRIVE_THUMBNAIL_URL = 'https://drive.google.com/thumbnail';
 const DRIVE_FILE_URL = 'https://drive.google.com/file/d/';
 const DRIVE_DOWNLOAD_URL = 'https://drive.google.com/uc?export=download&id=';
@@ -11,6 +13,7 @@ const CODE_KEY = 'photosCode';
 const NAME_KEY = 'photosName';
 const DEVICE_KEY = 'photosDevice';
 const LIST_KEY = 'photosList';
+const MINE_KEY = 'photosMine';
 
 // Checked here so the page unlocks instantly; the script checks it again on every request.
 const PASSCODE = 'andrea';
@@ -22,6 +25,8 @@ const MAX_VIDEO_LABEL = '3 minutes';
 const MAX_IMAGE_BYTES = 100 * 1024 * 1024;
 const MAX_VIDEO_BYTES = 2 * 1024 * 1024 * 1024;
 const PARALLEL_UPLOADS = 3;
+const THUMB_WIDTH = 400; // enough for a grid tile on a 3x phone screen
+const EAGER_TILES = 12;  // the first rows load straight away; the rest as you scroll
 const RELAY_CHUNK_BYTES = 4 * 1024 * 1024; // Drive requires multiples of 256 KiB
 const RECENT_MS = 3 * 60 * 1000; // local adds/deletes win over a stale cached list
 const TIME_ZONE = 'Europe/Paris';
@@ -55,6 +60,7 @@ const state = {
     recentlyAdded: new Map(),   // id → when it was added on this device
     recentlyDeleted: new Map(), // id → when it was deleted on this device
     localPreviews: new Map(),   // id → object URL of an image uploaded from this device
+    mine: loadMine(),           // ids uploaded from this device (they can be deleted here)
     tiles: new Map(),
     sectionEls: new Map(),
     queue: [],
@@ -132,14 +138,43 @@ function photoLabel(photo) {
     ].filter(Boolean).join(', ');
 }
 
-function thumbUrl(id, width, attempt) {
-    return `${DRIVE_THUMBNAIL_URL}?id=${encodeURIComponent(id)}&sz=w${width}${attempt ? `&v=${attempt}` : ''}`;
+// Drive's image server, asked directly — drive.google.com/thumbnail only redirects
+// there, which roughly doubles the wait. Brand-new uploads aren't on it yet, so
+// retries (attempt ≥ 1) use the thumbnail URL, which takes a cache-busting param.
+function imageUrl(id, width, attempt) {
+    if (!attempt) return `${DRIVE_IMAGE_URL}${encodeURIComponent(id)}=w${width}`;
+    return `${DRIVE_THUMBNAIL_URL}?id=${encodeURIComponent(id)}&sz=w${width}&v=${attempt}`;
 }
 
 // Large enough for a sharp full-screen image, bucketed so neighbours share cache.
 function theaterWidth() {
     const px = Math.max(window.innerWidth, window.innerHeight) * Math.min(window.devicePixelRatio || 1, 2);
-    return Math.min(2400, Math.max(800, Math.ceil(px / 400) * 400));
+    return Math.min(2000, Math.max(800, Math.ceil(px / 400) * 400));
+}
+
+function loadMine() {
+    try {
+        return new Set(JSON.parse(storageGet(MINE_KEY) || '[]'));
+    } catch (_err) {
+        return new Set();
+    }
+}
+
+function isMine(photo) {
+    return state.mine.has(photo.id);
+}
+
+// The shared, cached list can't say which photos are this device's, so remember
+// them here whenever the script does say so (uploads, and older cached lists).
+function rememberMine(photos) {
+    let changed = false;
+    photos.forEach(photo => {
+        if (photo.mine && !state.mine.has(photo.id)) {
+            state.mine.add(photo.id);
+            changed = true;
+        }
+    });
+    if (changed) storageSet(MINE_KEY, JSON.stringify([...state.mine]));
 }
 
 // ─── API ─────────────────────────────────────────────────────────────────────
@@ -171,7 +206,19 @@ async function fetchJson(url, options = {}, timeoutMs = 0) {
     }
 }
 
+// The edge-cached list is near-instant; if that endpoint is unavailable, ask the
+// Apps Script directly (slow when it hasn't run for a while).
 async function apiList() {
+    try {
+        const res = await fetch(`${LIST_API_URL}?code=${encodeURIComponent(state.code.trim().toLowerCase())}`);
+        if (res.status === 401) return { error: 'bad_code' };
+        if (res.ok) {
+            const data = await res.json();
+            if (Array.isArray(data.photos)) return data;
+        }
+    } catch (_err) {
+        // Fall back to the script below.
+    }
     const device = await getDevice();
     const params = new URLSearchParams({ action: 'photosList', code: state.code, device: device.hash });
     return fetchJson(`${SCRIPT_URL}?${params}`, {}, LIST_TIMEOUT_MS);
@@ -294,6 +341,7 @@ function stopPolling() {
 }
 
 function applyList(list) {
+    rememberMine(list);
     const now = Date.now();
     [state.recentlyAdded, state.recentlyDeleted].forEach(map => {
         map.forEach((time, id) => { if (now - time > RECENT_MS) map.delete(id); });
@@ -313,6 +361,7 @@ function applyList(list) {
 }
 
 function addPhoto(photo) {
+    rememberMine([photo]);
     state.photos.set(photo.id, photo);
     state.recentlyAdded.set(photo.id, Date.now());
     renderGallery();
@@ -384,6 +433,15 @@ function renderGallery() {
         if (signature !== el.signature) {
             el.grid.replaceChildren(...items.map(tileFor));
             el.signature = signature;
+        }
+    });
+
+    // The first rows load immediately and first; everything else lazily as it nears the screen.
+    state.ordered.slice(0, EAGER_TILES).forEach(photo => {
+        const img = state.tiles.get(photo.id).firstChild;
+        if (img.loading !== 'eager') {
+            img.fetchPriority = 'high';
+            img.loading = 'eager';
         }
     });
 
@@ -471,19 +529,23 @@ function tileFor(photo) {
     return tile;
 }
 
-// Drive needs a little while to generate thumbnails for new uploads, so retry
-// with backoff and show "Processing" meanwhile.
+// Drive needs a little while to generate thumbnails for new uploads: after one
+// immediate retry via the thumbnail URL, retry with backoff and show "Processing".
 function loadThumb(img, photo, tile) {
     let attempt = 0;
     img.onload = () => tile.classList.remove('is-loading', 'is-processing');
     img.onerror = () => {
         attempt++;
+        if (attempt === 1) {
+            img.src = imageUrl(photo.id, THUMB_WIDTH, attempt);
+            return;
+        }
         tile.classList.remove('is-loading');
         tile.classList.add('is-processing');
         if (attempt > 8 || !state.tiles.has(photo.id)) return;
-        setTimeout(() => { img.src = thumbUrl(photo.id, 480, attempt); }, Math.min(30000, 1500 * 2 ** attempt));
+        setTimeout(() => { img.src = imageUrl(photo.id, THUMB_WIDTH, attempt); }, Math.min(30000, 1500 * 2 ** attempt));
     };
-    img.src = state.localPreviews.get(photo.id) || thumbUrl(photo.id, 480);
+    img.src = state.localPreviews.get(photo.id) || imageUrl(photo.id, THUMB_WIDTH);
 }
 
 // ─── Theater view ────────────────────────────────────────────────────────────
@@ -576,7 +638,7 @@ function updateTheater() {
         photo.uploader ? `Shared by ${photo.uploader}` : '',
     ].filter(Boolean).join(' · ');
     $('theater-download').href = DRIVE_DOWNLOAD_URL + encodeURIComponent(photo.id);
-    $('theater-delete').classList.toggle('hidden', !photo.mine);
+    $('theater-delete').classList.toggle('hidden', !isMine(photo));
     $('theater-prev').disabled = index === 0;
     $('theater-next').disabled = index === list.length - 1;
 }
@@ -599,21 +661,30 @@ function fillSlide(slide, photo) {
     img.alt = photoLabel(photo);
     img.draggable = false;
     slide.classList.add('is-loading');
+    let triedFallback = false;
     img.onload = () => slide.classList.remove('is-loading', 'is-processing');
     img.onerror = () => {
+        if (!triedFallback && !img.src.startsWith('blob:')) {
+            triedFallback = true;
+            img.src = imageUrl(photo.id, THUMB_WIDTH, 1);
+            return;
+        }
         slide.classList.remove('is-loading');
         slide.classList.add('is-processing');
     };
 
     // Show the (usually cached) grid thumbnail straight away, then swap in the sharp one.
     const local = state.localPreviews.get(photo.id);
-    img.src = local || thumbUrl(photo.id, 480);
+    img.src = local || imageUrl(photo.id, THUMB_WIDTH);
     if (!local) {
         const full = new Image();
         full.onload = () => {
             if (slide.dataset.id === id && !slide.classList.contains('is-playing')) img.src = full.src;
         };
-        full.src = thumbUrl(photo.id, theaterWidth());
+        full.onerror = () => {
+            if (!full.src.includes(DRIVE_THUMBNAIL_URL)) full.src = imageUrl(photo.id, theaterWidth(), 1);
+        };
+        full.src = imageUrl(photo.id, theaterWidth());
     }
     slide.appendChild(img);
 
@@ -748,7 +819,7 @@ window.addEventListener('popstate', () => {
 
 async function deleteCurrent() {
     const photo = state.photos.get(state.theaterId);
-    if (!photo || !photo.mine) return;
+    if (!photo || !isMine(photo)) return;
     if (!confirm(`Delete this ${photo.type === 'video' ? 'video' : 'photo'} for everyone?`)) return;
 
     const button = $('theater-delete');
